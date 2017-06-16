@@ -47,10 +47,18 @@ H_new = vertcat(H,newpos');
 %Determine closes hinge
 cross_list = [0 0 0];
 drops = [min(base_link_hinges),max(base_link_hinges),size(H_new,1)];
+H_new_base = H_new;
+H_new_base(drops,:) = [];
 
 while numel(cross_list)>0
     H_for_closest = H_new;
     H_for_closest(drops,:) = [];
+    
+    %FIX: if no non-crosser can be found, just select closest.
+    if size(H_for_closest,1)==0
+        closest_hinge = dsearchn(H_new_base,newpos');
+        break
+    end
     
     closest_hinge = dsearchn(H_for_closest,newpos');
     hing_no_in_closestH = ismember(H_new,H_for_closest(closest_hinge,:),'rows');

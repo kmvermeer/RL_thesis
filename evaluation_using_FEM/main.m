@@ -10,8 +10,8 @@ rotate = 2*pi;
 turnme = 3;
 
 %% Initialize structure:
-% [I,H] = random_init(1);                   %Uncomment for random structure
-[I,H] = demo_structures(8);                 %Uncomment for deme structure% 
+% [I,H] = random_init(4);                   %Uncomment for random structure
+[I,H] = demo_structures(1);                 %Uncomment for deme structure% 
 
 Htrans = H';
 x0 = Htrans(:);
@@ -64,7 +64,6 @@ if sum(isnan(values)) == 0 && size(xout,1)>5
     disp(length_straight_sections)
     disp('Total scores')
     disp(scores)
-    disp(length_straight_sections(id_max-2))
     screenshots = animate_motion(I,xout,nM,values);
     plotx(x0,I)
 else

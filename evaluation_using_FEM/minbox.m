@@ -23,6 +23,7 @@ function bb = minbox(X)
 
     % compute the convex hull (CH is a 2*k matrix subset of X)
     X = X';
+    
     k = convhull(X(1,:),X(2,:));
     CH = X(:,k);
 

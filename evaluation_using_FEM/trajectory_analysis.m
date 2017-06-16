@@ -24,8 +24,8 @@ function [final_score,id_max,straightness_score_list,length_straight_sections]= 
         
         %Building list of straight trajecotry lengths.
         length_straight_sections(i) = length_straight_section;
-        
-        if length(straight_section)>7 %If less then 4 points are valid, its scored 0.
+        no_of_unique_points = size(unique(straight_section,'rows'),1);
+        if no_of_unique_points>3 %If less then 4 points are valid, its scored 0.
 
             %Fitting minimal-surface-boxes around straight sections to determine
             %straightness
