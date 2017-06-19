@@ -58,7 +58,7 @@ while numel(cross_list)>0
     
     %Check for crosses
     new_link = [H_new(closest_hinge,:),H_new(end,:)];
-    cross_list = detect_crossing(M,link,new_link);
+    cross_list = detect_crossing(I,H,link,new_link);
     cross_list
     %If corssing occurs, delete currently selected hinge from search space
     if numel(cross_list)>0

@@ -3,11 +3,6 @@ close all
 clc
 tic
 
-%% Constants and Settings:
-lr = 1;
-evals = 500;
-rotate = 2*pi;
-turnme = 3;
 
 %% Initialize structure:
 % [I,H] = random_init(4);                   %Uncomment for random structure

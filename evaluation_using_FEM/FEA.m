@@ -1,4 +1,4 @@
-function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,rotate)
+function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,total_rotation)
     %% Initializing matrices and values for FEA
     nH = size(I,2);
     nM = size(I,1);
@@ -14,7 +14,7 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,rotate)
     values.left = values.right;
     x = x0;
     angle = phi0;
-    dphi = rotate/evals;
+    dphi = total_rotation/evals;
 
     input_direction = 1;
     reverse = 0;

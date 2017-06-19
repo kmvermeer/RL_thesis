@@ -1,4 +1,4 @@
-function [cross_list] = detect_crossing(M,link,new_line)
+function [cross_list] = detect_crossing(I,H,link,new_line)
 %Function performs a check for crossings between the current mechanism
 %and a new line. Returns list denoting links numbers that cross 
 % with new_line. The link number in 'link' is neglected.
@@ -17,11 +17,13 @@ function [cross_list] = detect_crossing(M,link,new_line)
 
     v = [X1,Y1]';
     s = [X2-X1,Y2-Y1]';
-    nM = size(M,1);
+    nM = size(I,1);
     potential_cross_list = [];
 
     for i = 1:nM
-        m = M(i,:);
+        mtrans = H(get_connections(I,i,'bar'),:);
+        m = mtrans';
+        m = m(:)';
         xm1 = min([m(1),m(3)]);
         xm2 = max([m(1),m(3)]);
         ym1 = min([m(2),m(4)]);
@@ -45,10 +47,12 @@ function [cross_list] = detect_crossing(M,link,new_line)
 
     for k = 1:numel(potential_cross_list)
         crosser = potential_cross_list(k);
-        xcr1 = M(crosser,1);
-        xcr2 = M(crosser,3);
-        ycr1 = M(crosser,2);
-        ycr2= M(crosser,4);
+        nodes = H(get_connections(I,crosser,'bar'),:);
+        xcr1 = nodes(1);
+        xcr2 = nodes(2);
+        ycr1 = nodes(3);
+        ycr2 = nodes(4);
+    
 
         u = [xcr1,ycr1]';
         r = [xcr2-xcr1,ycr2-ycr1]';
