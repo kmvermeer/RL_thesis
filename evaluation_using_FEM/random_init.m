@@ -35,7 +35,7 @@ function [I,H] = random_init(no_of_operations)
     [I,H,M] = build_mech(H0,TDlist,linklist);
     nM = size(M,1);
     nH = size(H,1);
-    plot_mech(I,H,M);
+    plot_mech(I,H);
 end
 
 %Just adding some random commentsddd

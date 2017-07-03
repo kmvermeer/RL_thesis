@@ -1,5 +1,8 @@
-function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,total_rotation)
+function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,turnme_hinge)
     %% Initializing matrices and values for FEA
+    err = 1e-4;
+    max_iter = 100;
+    settings_file
     nH = size(I,2);
     nM = size(I,1);
     dof = nH*2;
@@ -15,29 +18,39 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,total_rotation
     x = x0;
     angle = phi0;
     dphi = total_rotation/evals;
-
+    
     input_direction = 1;
     reverse = 0;
-    err = 1e-4;
+    
     list_of_angles = linspace(0,2*pi,evals);
     k = 1;
     infeasible_domain = 0;
     
+    connected_to_input_link = get_connections(I,input_link,'bar');
+    base_hinge = connected_to_input_link(connected_to_input_link~=turnme_hinge);
+    
+    nodes = zeros(nM,2);
+    for i =1:nM
+        nodes(i,:) = get_connections(I,i,'bar');
+    end
+    
+    
     while k<evals && not(infeasible_domain == 1 && reverse == 1)
     %     dphi = 0;
 
-        x(5) = L(input_link)*cos(angle);
-        x(6) = L(input_link)*sin(angle);
+        x(2*turnme_hinge-1) = L(input_link)*cos(angle)+x0(2*base_hinge-1);
+        x(2*turnme_hinge) = L(input_link)*sin(angle)+x0(2*base_hinge);
         V = 1;
         iter = 0;
-
-        while V>err && iter<100
+        LR = lr; %Setting learning rate to default value from settings file
+        while V>err && iter<max_iter
+            V_old = V;
             K = zeros(dof,dof);
             A = K;
             Hessian = K;
             V = 0;
             for i = 1:nM
-                node = get_connections(I,i,'bar');
+                node = nodes(i,:);
                 from = node(1);
                 to = node(2);
                 x1 = x(2*from-1); y1 = (x(2*from));
@@ -82,24 +95,27 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,total_rotation
                 Hessian = Hessian +(Le*ge_bar + (l-Le)*ze_bar);
                 V = V+Ve;
             end
+            
+            if V>V_old
+                LR = LR/2;
+                iter = iter+1;
+            elseif V>err && not(isnan(V))
+                Hfree = Hessian(freenodes,freenodes);
+                Afree = A(freenodes,freenodes);
+                dXfree = Hfree \ (-Afree);
+                dxfree = dXfree(:,1);
 
-            Hfree = Hessian(freenodes,freenodes);
-            Afree = A(freenodes,freenodes);
+                xfree = x(freenodes)+LR*dxfree;
+                x(freenodes) = xfree;
 
-            dXfree = Hfree \ (-Afree);
-    %         dXfree = pinv(Hfree,-Afree);
-            dxfree = dXfree(:,1);
-
-            xfree = x(freenodes)+dxfree;
-            x(freenodes) = xfree;
-
-            iter = iter+1;  
+                iter = iter+1;
+            end           
         end
-
-        if reverse == 1                 %If we are turning right
+        
+        if reverse == 1 && V<err                %If we are turning right
             xout.right(k,:) = x;
             values.right(k) = V;
-        else                            %If we are turning left
+        elseif reverse ==0 && V<err             %If we are turning left
             xout.left(k,:) = x;
             values.left(k) = V;
         end
@@ -112,14 +128,14 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,total_rotation
                 infeasible_domain = 0;
                 input_direction = -1*input_direction;
                 reverse = 1;
-                disp('Reversing direction')
+%                 disp('Reversing direction')
                 k = 1;
                 x = x0;
                 angle = phi0;
             end
         end          
 
-
+    
     end
 
     values.right(all(xout.right==0,2),:) = [] ;
@@ -131,5 +147,5 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,total_rotation
     xout.left = flipud(xout.left);
     values = [values.left;values.right];%Removing double appearance of x0
     xout = [xout.left;xout.right];%Removing double appearance of x0
-
+    
 end

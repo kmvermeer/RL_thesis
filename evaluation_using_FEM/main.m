@@ -6,7 +6,8 @@ tic
 
 %% Initialize structure:
 % [I,H] = random_init(4);                   %Uncomment for random structure
-[I,H] = demo_structures(1);                 %Uncomment for deme structure% 
+[I,H] = demo_structures(8);                 %Uncomment for deme structure% 
+
 
 Htrans = H';
 x0 = Htrans(:);
@@ -22,13 +23,15 @@ else
     cons_to_1(cons_to_1 == 1) = [];
     input_link = min(cons_to_1);
 end
-
+input_link_hinges = get_connections(I,input_link,'bar');
+turnme_hinge = max(input_link_hinges);
 fixme = [1,2];
-fixed = [fixme,turnme];
+fixed = [fixme,turnme_hinge];
 nodes = 1:1:2*nH;
 fixnodes = sort([2*fixed-1 2*fixed]);
 freenodes = nodes;
 freenodes(fixnodes) = [];
+
 
 %% Determining initial lenghts and angle phi0
 for i = 1:nM
@@ -45,7 +48,7 @@ end
 
 %% Performing FEA 
 tic
-[xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,evals,rotate);
+[xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,turnme_hinge);
 toc
 
 %% Determine scores and display them
