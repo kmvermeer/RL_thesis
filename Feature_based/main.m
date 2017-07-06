@@ -37,16 +37,11 @@ while counter < epochs
         
         [s_new,r,feasible_design] = stepper(s,a);
         [Q_new,a_new] = choose_action(s_new,w,counter,a_list);
-        delta = r+discount_rate*Q_new-Q;
+        target = r+discount_rate*Q_new;
+        delta = target - Q;
         
         for i = 1:nF
             update = learning_rate*delta*F(i);
-%             if update>6
-%                 update = 6;
-%             elseif update<-6
-%                 update = -6;
-%             end
-            
             w(i) = w(i)+update;
             if isnan(w(i))
                 keyboard

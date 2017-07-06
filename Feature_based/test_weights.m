@@ -9,7 +9,7 @@ a_list = [];
 s = get_state(I,H);
 a_list = [];
 
-for i = 1:10
+for i = 1:4
     [I,H] = state2IH(s);
     get_reward(I,H)
     [Q,a] = choose_action(s,w,9999999,[]);
