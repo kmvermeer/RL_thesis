@@ -6,9 +6,9 @@ function [r,feasible_design] = get_reward(I,H,varargin)
     nH = size(I,2);
     L = zeros(nM,1);
     feasible_design = 1;
-    addpath /Users/kazv/Documents/TU/Thesis/MATLAB/evaluation_using_FEM/
-    addpath /Users/kazv/Documents/TU/Thesis/MATLAB/basic_RL_Hod/
-    addpath /Users/kazv/Documents/TU/Thesis/MATLAB/Hod_operators/
+    addpath ../evaluation_using_FEM/
+    addpath ../basic_RL_Hod/
+    addpath ../Hod_operators/
    
     
     %% Setting free and fixed elements:
@@ -56,19 +56,19 @@ function [r,feasible_design] = get_reward(I,H,varargin)
         [final_score,id_max,straightness_score_list,length_straight_sections]=... 
             trajectory_analysis(xout,values,I,x0,plot_trajectories);
         
+        
         scores = straightness_score_list.*length_straight_sections;
     else
         final_score = 0;
-        disp('Infeasible design')
+%         disp('Infeasible design')
         feasible_design = 0;
     end
-    r = final_score;
     %trying to force medium-high scores
-    if r>100
-        r = 10;
-    elseif r>0
-        r = 0;
+    
+    if final_score<1
+        r = -1;
     else
-        r = -5;
+        r = final_score/100;
     end
+    
 end

@@ -42,7 +42,7 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,turnme_hinge)
         x(2*turnme_hinge) = L(input_link)*sin(angle)+x0(2*base_hinge);
         V = 1;
         iter = 0;
-        LR = lr; %Setting learning rate to default value from settings file
+        LR = lr_FEA; %Setting learning rate to default value from settings file
         while V>err && iter<max_iter
             V_old = V;
             K = zeros(dof,dof);
@@ -145,7 +145,7 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,turnme_hinge)
 
     values.left = flipud(values.left);
     xout.left = flipud(xout.left);
-    values = [values.left;values.right];%Removing double appearance of x0
-    xout = [xout.left;xout.right];%Removing double appearance of x0
+    values = [values.left;values.right(2:end,:)];%Removing double appearance of x0
+    xout = [xout.left;xout.right(2:end,:)];%Removing double appearance of x0
     
 end

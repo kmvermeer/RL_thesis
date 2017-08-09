@@ -1,25 +1,25 @@
-function [Q_max,a_max,valid]= choose_action(s,w,counter,a_list,acounter)
-    a_list = a_list(find(a_list));
+function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,layer_settings)
     settings_file
     valid = true;
     [I,H] = state2IH(s);
     nM=size(I,1);
     nA = 2*max_no_of_bars;
-    N0 = 150;
-%     epsilon = N0/(N0+counter);
-    epsilon = 0.1;
+    N0 = epochs/100;
     if counter == 'deterministic'
         epsilon = 0;
+    else
+        epsilon = N0/(N0+counter);
     end
      
     %Try exploration
     randy = rand();
     if ( randy<epsilon)
 %         display('random choice')
+        random_bool = 1;
         a = randi(nA);
         link = ceil(a/2);
         if link <= nM
-            Q_new = get_Q(s,a,w);
+            Q_new = get_Q_NN(s,a,weights,layer_settings);
             Q_max = Q_new;
             a_max = a;
         else
@@ -31,6 +31,7 @@ function [Q_max,a_max,valid]= choose_action(s,w,counter,a_list,acounter)
         
 
     else
+        random_bool = 0;
 %         display('deliberate')
         if isempty(a_list)
             a_list = [9999];            %Making sure a_list(end) is always available,
@@ -45,11 +46,7 @@ function [Q_max,a_max,valid]= choose_action(s,w,counter,a_list,acounter)
             else                
                 link = ceil(a/2);
                 if link <= nM
-                    Q_new = get_Q(s,a,w);
-%                     if acounter(a)>0
-%                         Q_new = Q_new/acounter(a);          %Normaling Q value over number of visits to a
-%                     end
-          
+                    Q_new = get_Q_NN(s,a,weights,layer_settings);          
                 else
                     Q_new = 0;
                 end

@@ -1,6 +1,8 @@
 function [F,nF] = get_features(s,a)
     settings_file
     [I,H] = state2IH(s);
+
+    
     nM = size(I,1);
     nM_norm = nM/max_no_of_bars;
     nH = size(I,2);
@@ -55,24 +57,41 @@ function [F,nF] = get_features(s,a)
         end
         rel_angle(k) = max(abs(alphas))/pi;      
     end
-
+    
+    %Determine which are connected to base
     con2base = zeros(1,max_no_of_bars);
     ground1 = get_connections(I,1,'hinge');
     ground2 = get_connections(I,2,'hinge');
     grounded_bars = unique([ground1;ground2]);
     con2base(grounded_bars) = 1;
-
+    
+    %Boolean for operator type
+    if mod(a,2) == 0
+        isitT = 1;
+        isitD = 0;
+    else
+        isitT = 0;
+        isitD = 1;
+    end
+    
+    %Boolean list of selected bar to act on:
+    selected_bar = zeros(1,max_no_of_bars);
+    link = ceil(a/2);
+    selected_bar(link) = 1;
     
     %Assembling F(s) into vector
-    sub_F = [nM_norm,nH_norm,hinge_active,bar_active,rel_L,rel_angle,con2base];
+    sub_F = [nM_norm,nH_norm,hinge_active,bar_active,rel_L,rel_angle,con2base,isitT,isitD,selected_bar];
     no_sub_F = size(sub_F,2);
     
     %Putting F(s) into feature vector F(s,a) and adding bias feature
-    F = zeros(1,no_sub_F*nA+1);
-    F(1) = bias_feature;
-    idx_start = (a-1)*no_sub_F+2;
-    idx_end = idx_start+no_sub_F-1;
-    F(idx_start:idx_end) = sub_F;
+%     F = zeros(1,no_sub_F*nA+1);
+%     F(1) = bias_feature;
+%     idx_start = (a-1)*no_sub_F+2;         %Uncomment for dimensionality..
+%                                            trick
+%     idx_end = idx_start+no_sub_F-1;
+%     F(idx_start:idx_end) = sub_F;
 
+    F = [bias_feature,sub_F];         %Turn on to go back to small F (no..
+%                                      spreading per action).
     nF = size(F,2);
     end

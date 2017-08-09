@@ -1,4 +1,4 @@
-function [coordinate] = grid_coordinate(point,gridxy,type)
+tfunction [coordinate] = grid_coordinate(point,gridxy,type)
 	no_of_gridpoints = size(gridxy,1);
     n = sqrt(no_of_gridpoints);
     if strcmp(type,'to')

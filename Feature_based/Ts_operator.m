@@ -1,5 +1,5 @@
-function [I_new,H_new] = Ts_operator(I,H,link)
-
+function [I_new,H_new,feasible_design] = Ts_operator(I,H,link)
+    feasible_design =1;
     %Determine new hinge location and add to H
     base_link_hinges = find(I(link,:));
     base_vec = diff(H(base_link_hinges,:))';

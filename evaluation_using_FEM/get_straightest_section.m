@@ -65,7 +65,7 @@ function [straight_section,length_straigth_section] = get_straightest_section(x,
     [max_len,idx] = max(groups_of_straights);
     
     from = starters(idx);
-    to = from+max_len;
+    to = from+max_len-1;
     
     straight_section = [x(from:to),y(from:to)];
     if isempty(straight_section) == 1

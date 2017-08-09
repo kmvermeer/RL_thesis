@@ -6,8 +6,8 @@ function [xout] = animateIH(I,H)
     nH = size(I,2);
     L = zeros(nM,1);
     feasible_design = 1;
-    addpath /Users/kazv/Documents/TU/Thesis/MATLAB/evaluation_using_FEM/
-    addpath /Users/kazv/Documents/TU/Thesis/MATLAB/basic_RL_Hod/
+    addpath ../evaluation_using_FEM/
+    addpath ../basic_RL_Hod/
    
     
     %% Setting free and fixed elements:

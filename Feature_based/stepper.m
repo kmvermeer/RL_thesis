@@ -11,13 +11,17 @@ function [s_new,r,feasible_design] = stepper(s,a)
     
     nM = size(I,1);
     if link>nM
-        r = 0;
+        r = -1;
         s_new = s;
         feasible_design = 1;
     else
-        [I,H] = advance_mech(I,H,operator,link);
+        [I,H,feasible_design] = advance_mech(I,H,operator,link);
         s_new = get_state(I,H);
-        [r,feasible_design] = get_reward(I,H);
+        if feasible_design == 1 
+            [r,feasible_design] = get_reward(I,H);
+        else
+            r = -1;
+        end
     end
 end
 

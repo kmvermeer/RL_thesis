@@ -1,9 +1,9 @@
-function [I,H] = advance_mech(I,H,operator,link)
+function [I,H,feasible_design] = advance_mech(I,H,operator,link)
     
     if operator == 'T'
-        [I,H] = Ts_operator(I,H,link);
+        [I,H,feasible_design] = Ts_operator(I,H,link);
     else
-        [I,H] = Ds_operator(I,H,link);
+        [I,H,feasible_design] = Ds_operator(I,H,link);
     end
 
 end

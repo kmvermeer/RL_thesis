@@ -1,6 +1,6 @@
-function [I_new,H_new,M_new] = Ds_operator(I,H,link)
+function [I_new,H_new,feasible_design] = Ds_operator(I,H,link)
     nM = size(I,1);
-
+    feasible_design = 1;
 
     %Creating new incidence matrix
     base_link_hinges = get_connections(I,link,'bar');
@@ -66,11 +66,11 @@ function [I_new,H_new,M_new] = Ds_operator(I,H,link)
         if hasDuplicates
             ixDupRows = setdiff(1:size(H_new,1), A);
             dupRowValues = H_new(ixDupRows,:);
-            display('double hinges whilst performing Ds on link');
-            link
-            display(dupRowValues);
+%             display('double hinges whilst performing Ds on link');
+%             display(dupRowValues);
             H_new = H;
             I_new = I;
+            feasible_design = 0;
         end
     end
 end
