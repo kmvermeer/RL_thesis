@@ -1,6 +1,6 @@
 function dEdW = backprop(weights,style,input,truth)
  
-    
+%         error = 1/2*(truth-y0).^2;
     nL = length(weights);
     
     if nL == 2
@@ -14,9 +14,11 @@ function dEdW = backprop(weights,style,input,truth)
         yH = activation_NN(xH,style1,false);
         xO = [yH 1]*w2;
         yO = activation_NN(xO,style2,false);
+        
           
         %output layer
-        delta_O = -(truth-yO) .* activation_NN(yO,style2,true);
+        dEdyO = -(truth-yO);
+        delta_O = dEdyO .* activation_NN(yO,style2,true);
         dEdb2 = delta_O;
         dEdw2 = [yH' *delta_O; dEdb2];
         
@@ -47,7 +49,8 @@ function dEdW = backprop(weights,style,input,truth)
         yO = activation_NN(xO,style3,false);
           
         %output layer
-        delta_O = -(truth-yO) .* activation_NN(yO,style3,true);
+        dEdyO = -(truth-yO);
+        delta_O = dEdyO .* activation_NN(yO,style3,true);
         dEdb3 = delta_O;
         dEdw3 = [yH2' *delta_O; dEdb3];
 

@@ -8,7 +8,7 @@ total_rotation = 2*pi;
 max_no_of_hinges = 8;
 max_no_of_bars = (max_no_of_hinges - 4)*2+4;
 nA = 2*max_no_of_bars;
-
+negative_reward =-5;%The reward returned when selecting non-fitting solutions
 
 %% Initialize structure:
 

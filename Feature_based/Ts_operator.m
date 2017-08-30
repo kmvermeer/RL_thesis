@@ -77,7 +77,11 @@ function [I_new,H_new,feasible_design] = Ts_operator(I,H,link)
 
         %Check for crosses
         new_link = [H_new(closest_hinge,:),H_new(end,:)];
-        cross_list = detect_crossing(I,H,link,new_link);
+        try
+            cross_list = detect_crossing(I,H,link,new_link);
+        catch
+            keyboard
+        end
         %If corssing occurs, delete currently selected hinge from search space
         if numel(cross_list)>0
             drops = [drops,closest_hinge];
@@ -102,5 +106,20 @@ function [I_new,H_new,feasible_design] = Ts_operator(I,H,link)
     I_interim = [I,new_hing_col];
     I_interim(link,:) = replacement_link;
     I_new = vertcat(I_interim,new_bar1_row,new_bar2_row);
+    
+    %Test for duplicates in H
+    [C,A,~] = unique(H_new, 'rows', 'first');
+    hasDuplicates = size(C,1) < size(H_new,1);
+    if hasDuplicates
+        ixDupRows = setdiff(1:size(H_new,1), A);
+        dupRowValues = H_new(ixDupRows,:);
+%             display('double hinges whilst performing Ds on link');
+%             display(dupRowValues);
+        H_new = H;
+        I_new = I;
+        feasible_design = 0;
+    end
+        
+        
 end
 

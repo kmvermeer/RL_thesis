@@ -6,7 +6,7 @@ tic
 
 %% Initialize structure:
 % [I,H] = random_init(4);                   %Uncomment for random structure
-[I,H] = demo_structures(8);                 %Uncomment for deme structure% 
+[I,H] = demo_structures(6);                 %Uncomment for deme structure% 
 
 
 Htrans = H';

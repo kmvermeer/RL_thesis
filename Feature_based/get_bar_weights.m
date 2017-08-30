@@ -3,9 +3,7 @@ function [barplot, barplot_text] = get_bar_weights(w,nF,counter)
 
     barplot = bar(1:1:nF,w);
 %     barplot_text = text(20,1.7,int2str(counter),'FontName',e'Cambria','FontSize',10);
-    
-    
-    
+        
     dim = [.15 .7 .7 .15];
     
     

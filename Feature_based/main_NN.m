@@ -4,6 +4,9 @@ close all
 addpath ../evaluation_using_FEM/
 addpath ../basic_RL_Hod/
 addpath ../NN/
+addpath ../graphs/
+
+
 tstart = tic;
 settings_file;
 counter = 1;
@@ -22,19 +25,18 @@ acounter = zeros(1,nA);
 mean_hidden_errors = zeros(1,epochs*6);
 %% Init NN
 nIn = nF;
-nHidden = 140;
+nHidden = round(4*nF);
 nOut = 1;
 
 layer_settings.sizes = [nIn,nHidden,nOut];
 layer_settings.styles = {'Sigmoid','linear'};
-lr = 0.75;
-% lr = 0.001;
+lr = 0.3;
 decay_m = 0.9; 
 decay_RMS = 0.99;
 
 for l = 1:length(layer_settings.sizes)-1
-    weights{l} = 2*rand(layer_settings.sizes(l)+1,layer_settings.sizes(l+1))-1;
-    weights{l} = 0.1*weights{l};
+    weight_factor = sqrt(6)/(sqrt(layer_settings.sizes(l)+layer_settings.sizes(l+1)+2));
+    weights{l} = weight_factor*(2*rand(layer_settings.sizes(l)+1,layer_settings.sizes(l+1))-1);
 end
 grad = cellfun(@(x) x*0,weights,'uni',false);
 MS_grad = cellfun(@(x) x*0,weights,'uni',false);
@@ -54,6 +56,7 @@ while counter < epochs
     step_number = 1;
     %% Perform SARSA
     while term == 0
+        total_reward = 0;
         random_bool_list = [random_bool_list;random_bool];
         a_list(step_number) = a;
         acounter(a) = acounter(a)+1;
@@ -85,6 +88,7 @@ while counter < epochs
             a = a_new;
             
         end
+        total_reward = r + total_reward;
         error_list = [error_list;error];
         rlist = [rlist;r];
         Qlist(step_number) = Q;
@@ -102,12 +106,14 @@ while counter < epochs
         disp('COUNTER')
         disp(counter)
         disp(mean(error_list(end-9:end)))
+        disp(total_reward)
+        disp(a_list)
     end
 end
 
 disp('Finished all epochs')
-% load train
-% sound(y,2*Fs)
+load train
+sound(y,2*Fs)
 toc(tstart)
 
 

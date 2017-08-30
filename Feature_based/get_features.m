@@ -1,14 +1,56 @@
 function [F,nF] = get_features(s,a)
     settings_file
-    [I,H] = state2IH(s);
+    [I_orig,H_orig] = state2IH(s);
+    bias_feature = 1;
 
+    %% Things to notice about the current action:
+    
+    %Boolean for operator type
+    if mod(a,2) == 0
+        isitT = 1;
+        isitD = 0;
+        operator = 'T';
+    else
+        isitT = 0;
+        isitD = 1;
+        operator = 'D';
+    end
+    
+    %Boolean list of selected bar to act on:
+    selected_bar = zeros(1,max_no_of_bars);
+    link = ceil(a/2);
+    selected_bar(link) = 1;
+    
+    %% Things to notice about the current structure:
+    nM_current = size(I_orig,1);
+    %Booleon whether selected bar exists
+    bar_exist = 1;
+    if link>nM_current
+        bar_exist = 0;
+    end
+    
+    %number of connected links to current link
+    if link>nM_current
+        no_of_cons_to_link = 0;
+    else
+        connections = get_connections(I_orig,link,'bar');
+        no_of_cons_to_link = length(connections)/4; %division to semi-normalize
+    end
+    
+    
+    %% Resulting structure:
+    if bar_exist == 1
+        [I,H] = advance_mech(I_orig,H_orig,operator,link);
+    else
+        I = I_orig;
+        H = H_orig;
+    end
     
     nM = size(I,1);
     nM_norm = nM/max_no_of_bars;
     nH = size(I,2);
     nH_norm = nH/max_no_of_hinges;
     
-    bias_feature = 1;
     
     %Feature vector is long list of features:
     settings_file
@@ -58,31 +100,26 @@ function [F,nF] = get_features(s,a)
         rel_angle(k) = max(abs(alphas))/pi;      
     end
     
-    %Determine which are connected to base
+    %Determine which bars are connected to base
     con2base = zeros(1,max_no_of_bars);
     ground1 = get_connections(I,1,'hinge');
     ground2 = get_connections(I,2,'hinge');
     grounded_bars = unique([ground1;ground2]);
     con2base(grounded_bars) = 1;
     
-    %Boolean for operator type
-    if mod(a,2) == 0
-        isitT = 1;
-        isitD = 0;
-    else
-        isitT = 0;
-        isitD = 1;
-    end
+    %% Getting graph-type features from seperate function:
     
-    %Boolean list of selected bar to act on:
-    selected_bar = zeros(1,max_no_of_bars);
-    link = ceil(a/2);
-    selected_bar(link) = 1;
+    graph_features = get_graph_features(I,max_no_of_hinges,max_no_of_bars);
     
-    %Assembling F(s) into vector
-    sub_F = [nM_norm,nH_norm,hinge_active,bar_active,rel_L,rel_angle,con2base,isitT,isitD,selected_bar];
+    %% Assembling F(s) into vector
+    sub_F = [nM_norm,nH_norm,hinge_active,bar_active,rel_L,...
+            rel_angle,con2base,isitT,isitD,selected_bar,...
+            bar_exist,no_of_cons_to_link,graph_features];
+
+%     sub_F = [nM_norm,isitT,isitD,selected_bar,bar_exist,no_of_cons_to_link];
     no_sub_F = size(sub_F,2);
     
+
     %Putting F(s) into feature vector F(s,a) and adding bias feature
 %     F = zeros(1,no_sub_F*nA+1);
 %     F(1) = bias_feature;

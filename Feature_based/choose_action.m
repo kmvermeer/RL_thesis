@@ -1,15 +1,16 @@
-function [Q_max,a_max,valid]= choose_action(s,w,counter,a_list,acounter)
+function [Q_max,a_max,random_bool]= choose_action(s,w,counter,a_list,acounter)
     a_list = a_list(find(a_list));
     settings_file
-    valid = true;
     [I,H] = state2IH(s);
     nM=size(I,1);
     nA = 2*max_no_of_bars;
-    N0 = 150;
-%     epsilon = N0/(N0+counter);
-    epsilon = 0.1;
+    random_bool =0;
+%    N0 = epochs/10;
+    N0 = 50;
     if counter == 'deterministic'
         epsilon = 0;
+    else
+        epsilon = N0/(N0+counter);
     end
      
     %Try exploration
@@ -18,15 +19,12 @@ function [Q_max,a_max,valid]= choose_action(s,w,counter,a_list,acounter)
 %         display('random choice')
         a = randi(nA);
         link = ceil(a/2);
-        if link <= nM
-            Q_new = get_Q(s,a,w);
-            Q_max = Q_new;
-            a_max = a;
-        else
-            valid = false;
-            Q_max = 0;
-            a_max = a;
-        end
+        Q_new = get_Q(s,a,w);
+        Q_max = Q_new;
+        a_max = a;
+        random_bool = 1;
+%         disp('random')
+       
             
         
 
@@ -43,16 +41,16 @@ function [Q_max,a_max,valid]= choose_action(s,w,counter,a_list,acounter)
                 Q_new = 0;
 %                 display('prevented double')
             else                
-                link = ceil(a/2);
-                if link <= nM
-                    Q_new = get_Q(s,a,w);
+%                 link = ceil(a/2);
+%                 if link <= nM
+                Q_new = get_Q(s,a,w);
 %                     if acounter(a)>0
 %                         Q_new = Q_new/acounter(a);          %Normaling Q value over number of visits to a
 %                     end
           
-                else
-                    Q_new = 0;
-                end
+%                 else
+%                     Q_new = 0;
+%                 end
             end
             Q_list(a) = Q_new;
             

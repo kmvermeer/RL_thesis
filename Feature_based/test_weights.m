@@ -13,7 +13,7 @@ G = 0;
 for i = 1:4
     [I,H] = state2IH(s);
 %     [Q,a] = choose_action(s,w,'deterministic',[],0);
-    [Q,a] = choose_action_NN(s,weights,a_list,'deterministic',layer_settings);
+     [Q,a] = choose_action_NN(s,weights,a_list,'deterministic',layer_settings);
     Qlist(i) = Q;
 %     if Q == 0
 %         keyboard
@@ -28,3 +28,6 @@ end
 [I,H] = state2IH(s);
 score = get_reward(I,H,true)
 % animateIH(I,H);
+
+total_reward
+disp(a_list)

@@ -42,14 +42,14 @@ function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,la
         for a = 1:nA
             if ismember(a,a_list(end))
                 Q_new = 0;
-%                 display('prevented double')
+                display('prevented double')
             else                
-                link = ceil(a/2);
-                if link <= nM
-                    Q_new = get_Q_NN(s,a,weights,layer_settings);          
-                else
-                    Q_new = 0;
-                end
+%                 link = ceil(a/2);
+%                 if link <= nM
+                Q_new = get_Q_NN(s,a,weights,layer_settings);          
+%                 else
+%                     Q_new = 0;
+%                 end
             end
             Q_list(a) = Q_new;
             

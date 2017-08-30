@@ -15,6 +15,20 @@ function [output] = activation_NN(input,style,varargin)
             else
                 output = poslin(input);
             end
+        case 'leaky_ReLU'
+            if nargin == 3 & varargin{1} == true
+                if input>0
+                    output = 1;
+                else
+                    output = 0.01;
+                end
+            else
+                if input>0
+                    output = input;
+                else
+                    output = 0.01*input;
+                end
+            end
         case 'linear'
         if nargin == 3 & varargin{1} == true
             output = 1;

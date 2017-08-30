@@ -66,7 +66,7 @@ function [r,feasible_design] = get_reward(I,H,varargin)
     %trying to force medium-high scores
     
     if final_score<1
-        r = -1;
+        r = negative_reward;
     else
         r = final_score/100;
     end

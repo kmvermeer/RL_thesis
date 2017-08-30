@@ -6,5 +6,5 @@ function [connections] = get_connections(I,element_no,type)
     else
         error('Unknown element type: %s',type);
    
-end
+    end
 end

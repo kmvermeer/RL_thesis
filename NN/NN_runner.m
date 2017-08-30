@@ -6,14 +6,17 @@ close all
 close all
 
 %% Network settings
-layer_settings.sizes = [2,4,1];
-layer_settings.styles = {'Sigmoid','Sigmoid','linear'};
-lr = 0.75;
+layer_settings.sizes = [2,10,1];
+layer_settings.styles = {'Sigmoid','Sigmoid'};
+lr = .2;
 decay_m = 0.9; 
 decay_RMS = 0.99;
 
 for l = 1:length(layer_settings.sizes)-1
-    weights{l} = 2*rand(layer_settings.sizes(l)+1,layer_settings.sizes(l+1))-1;
+    %weight according to http://machinelearning.wustl.edu/mlpapers/paper_files/AISTATS2010_GlorotB10.pdf
+    weight_factor = sqrt(6)/(sqrt(layer_settings.sizes(l)+layer_settings.sizes(l+1)+2));
+    weights{l} = weight_factor*(2*rand(layer_settings.sizes(l)+1,layer_settings.sizes(l+1))-1);
+
 end
 
 epochs = 10000;
@@ -45,12 +48,12 @@ while k <= epochs && (moving_average_error > 1e-3)
     [new_weights,grad,MS_grad,output,error] = train_NN (weights, input, current_truth, ...
                                                             layer_settings, lr, decay_m,...
                                                             decay_RMS, grad, MS_grad, k,...
-                                                            'SGD');
+                                                            'Adams');
                                                        
     errors(k) = error;
     %Check whether terminal conditions are being met                                                    
-    if k>10
-        moving_average_error = mean(errors(k-10:k));
+    if k>50
+        moving_average_error = mean(errors(k-50:k));
     end
     k = k+1;
 end
@@ -70,5 +73,5 @@ title('MSE vs iterations')
 xlabel('MSE')
 ylabel('Iterations')
 grid on
-afprintf('Finished after %i iterations',k)
+fprintf('Finished after %i iterations',k)
 

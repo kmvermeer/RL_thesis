@@ -41,5 +41,5 @@ function [new_weights,grad,MS_grad,output,error] = train_NN (weights, input, tru
     end
  
     output = eval_NN(new_weights,input,layer_settings,true);
-    error = 1/2*(output-truth).^2;
+    error = 1/2*(truth - output).^2;
 end

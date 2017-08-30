@@ -1,37 +1,43 @@
-function [weights,error_list,Qlist_all,alist_all] = main_NN_fun(lr,type,max_error,max_epochs)
-    settings_file
+function [weights,error_list,Qlist_all,alist_all,total_rewards] = main_NN_fun(lr,type,styles,hidden_multiplier,max_error,max_epochs)
+   
+    tstart = tic;
+    settings_file;
     counter = 1;
     [I,H] = initIH;
     s = get_state(I,H);
     [~,nF] = get_features(s,1);
     rlist = [0];
-    error_margin = 0;
+    deltalist = [0];
     Qlist_all = [];
     alist_all = [];
+    delta_hidden_list = [];
+    delta_list = [];
     error_list = [];
+    total_rewards = [];
+    random_bool_list = [];
     acounter = zeros(1,nA);
     mean_hidden_errors = zeros(1,epochs*6);
     %% Init NN
     nIn = nF;
-    nHidden = 140;
+    nHidden = round(hidden_multiplier*nF);
     nOut = 1;
 
     layer_settings.sizes = [nIn,nHidden,nOut];
-    layer_settings.styles = {'Sigmoid','linear'};
-    
-    % lr = 0.001;
+%     layer_settings.styles = {'Sigmoid','linear'};
+    layer_settings.styles = styles;
+
     decay_m = 0.9; 
     decay_RMS = 0.99;
 
     for l = 1:length(layer_settings.sizes)-1
-        weights{l} = 2*rand(layer_settings.sizes(l)+1,layer_settings.sizes(l+1))-1;
-        weights{l} = 0.1*weights{l};
+        weight_factor = sqrt(6)/(sqrt(layer_settings.sizes(l)+layer_settings.sizes(l+1)+2));
+        weights{l} = weight_factor*(2*rand(layer_settings.sizes(l)+1,layer_settings.sizes(l+1))-1);
     end
     grad = cellfun(@(x) x*0,weights,'uni',false);
     MS_grad = cellfun(@(x) x*0,weights,'uni',false);
 
     %% Initialize basic 4bar starting point mechanism
-    while counter < max_epochs && error_margin == 0
+    while counter < max_epochs
 
         tic
         TDlist = '';
@@ -39,12 +45,14 @@ function [weights,error_list,Qlist_all,alist_all] = main_NN_fun(lr,type,max_erro
         a_list = zeros(1,10);
         [I,H] = build_mech(H0,TDlist,linklist);
         s = get_state(I,H);
-        [Q,a] = choose_action_NN(s,weights,a_list,counter,layer_settings);
+        [Q,a,random_bool] = choose_action_NN(s,weights,a_list,counter,layer_settings);
         term = 0;
         Qlist = zeros(1,10);
         step_number = 1;
         %% Perform SARSA
         while term == 0
+            total_reward = 0;
+            random_bool_list = [random_bool_list;random_bool];
             a_list(step_number) = a;
             acounter(a) = acounter(a)+1;
             [Q,F] = get_Q_NN(s,a,weights,layer_settings);
@@ -56,7 +64,7 @@ function [weights,error_list,Qlist_all,alist_all] = main_NN_fun(lr,type,max_erro
                 %perform update alternative
                 target = r;
                 delta = target-Q;
-                [new_weights,grad,MS_grad,~,error] = train_NN (weights, F, target, ...
+                [new_weights,grad,MS_grad,output,error] = train_NN (weights, F, target, ...
                                                         layer_settings, lr, decay_m,...
                                                         decay_RMS, grad, MS_grad, counter,...
                                                         type);
@@ -64,9 +72,9 @@ function [weights,error_list,Qlist_all,alist_all] = main_NN_fun(lr,type,max_erro
                 term = 1;
 
             else
-                [Q_new,a_new] = choose_action_NN(s_new,weights,a_list,counter,layer_settings);
+                [Q_new,a_new,random_bool] = choose_action_NN(s_new,weights,a_list,counter,layer_settings);
                 target = r+discount_rate*Q_new;
-                [new_weights,grad,MS_grad,~,error] = train_NN (weights, F, target, ...
+                [new_weights,grad,MS_grad,output,error] = train_NN (weights, F, target, ...
                                                         layer_settings, lr, decay_m,...
                                                         decay_RMS, grad, MS_grad, counter,...
                                                         type);
@@ -75,6 +83,7 @@ function [weights,error_list,Qlist_all,alist_all] = main_NN_fun(lr,type,max_erro
                 a = a_new;
 
             end
+            total_reward = r + total_reward;
             error_list = [error_list;error];
             rlist = [rlist;r];
             Qlist(step_number) = Q;
@@ -85,16 +94,22 @@ function [weights,error_list,Qlist_all,alist_all] = main_NN_fun(lr,type,max_erro
         Qlist(step_number) = Q_new;
         Qlist_all = [Qlist_all;Qlist];
         alist_all = [alist_all;a_list];
-
-        if mod(counter,100)==0
+        total_rewards = [total_rewards;total_reward];
+    %      barplot.YData = weights.W2(1:nHidden);
+    %      barplot_text.String = strcat('Epochs: ',int2str(counter));
+    %      drawnow
+        if mod(counter,10+1)==0
             disp('COUNTER')
             disp(counter)
-            disp(mean(error_list(end-20:end)))
-            if max(error_list(end-50:end))<max_error
-                error_margin = 1;
-            end
+            disp(mean(error_list(end-9:end)))
+            disp(total_reward)
         end
     end
+
+    disp('Finished all epochs')
+    % load train
+    % sound(y,2*Fs)
+    toc(tstart)
 
 end
 

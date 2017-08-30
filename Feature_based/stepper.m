@@ -11,7 +11,7 @@ function [s_new,r,feasible_design] = stepper(s,a)
     
     nM = size(I,1);
     if link>nM
-        r = -1;
+        r = negative_reward;
         s_new = s;
         feasible_design = 1;
     else
@@ -20,7 +20,7 @@ function [s_new,r,feasible_design] = stepper(s,a)
         if feasible_design == 1 
             [r,feasible_design] = get_reward(I,H);
         else
-            r = -1;
+            r = negative_reward;
         end
     end
 end
