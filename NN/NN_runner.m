@@ -6,10 +6,11 @@ close all
 close all
 
 %% Network settings
-layer_settings.sizes = [2,10,1];
+layer_settings.sizes = [2,30,1];
 layer_settings.styles = {'Sigmoid','Sigmoid'};
-lr = .2;
-decay_m = 0.9; 
+layer_settings.dropout_rates = [0 0.5 0];
+lr = 1.75;
+decay_m = 0.95; 
 decay_RMS = 0.99;
 
 for l = 1:length(layer_settings.sizes)-1
@@ -19,7 +20,7 @@ for l = 1:length(layer_settings.sizes)-1
 
 end
 
-epochs = 10000;
+epochs = 5100;
 
 %% Initialization & Dataset creation
 errors = ones(1,epochs)*999;
@@ -41,14 +42,14 @@ MS_grad = cellfun(@(x) x*0,new_weights,'uni',false);
 
 %% Training
 k = 1;
-while k <= epochs && (moving_average_error > 1e-3)
+while k <= epochs && (moving_average_error > 0.01)
     weights = new_weights;
     input = train(k,:);
     current_truth = truth(k);
     [new_weights,grad,MS_grad,output,error] = train_NN (weights, input, current_truth, ...
                                                             layer_settings, lr, decay_m,...
                                                             decay_RMS, grad, MS_grad, k,...
-                                                            'Adams');
+                                                            'Adams_maxnorm');
                                                        
     errors(k) = error;
     %Check whether terminal conditions are being met                                                    
@@ -57,7 +58,7 @@ while k <= epochs && (moving_average_error > 1e-3)
     end
     k = k+1;
 end
-
+errors(k:end) = [];
 %% Testing results
 test_set = randi(2,200,2)-1;
 predictions = zeros(length(test_set),1);

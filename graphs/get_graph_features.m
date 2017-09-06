@@ -1,9 +1,10 @@
 
-function graph_feature_vector = get_graph_features(I,max_no_of_hinges,max_no_of_bars)
+function graph_feature_vector = get_graph_features(I,H,max_no_of_hinges,max_no_of_bars,shortest_path)
     nM = size(I,1);
     nH = size(I,2);
     from = [];
     to = [];
+    weights = [];
 
     %% Creating placeholder feature list:
     init_ft_hinge = zeros(1,max_no_of_hinges);
@@ -33,6 +34,7 @@ function graph_feature_vector = get_graph_features(I,max_no_of_hinges,max_no_of_
     ft_longest_circle_length = 0;
     ft_shortest_circle_length = 0;
     ft_cluster_coef = init_ft_hinge;
+    if shortest_path == true; ft_SPs = zeros(1,max_no_of_hinges * (max_no_of_hinges -1) / 2);end
     
     graph_feature_vector =[ft_betweenness, ft_degrees, ft_closeness,...
         ft_pagerank, ft_eigenvector, ft_graph_density,...
@@ -43,6 +45,7 @@ function graph_feature_vector = get_graph_features(I,max_no_of_hinges,max_no_of_
         ft_part_of_periphery, ft_no_of_cycles, ft_part_of_longest, ...
         ft_part_of_shortest, ft_longest_circle_length,...
         ft_shortest_circle_length, ft_cluster_coef];
+        
     
     if length(unique(I,'rows')) ~= length(I)
         return   
@@ -57,17 +60,31 @@ function graph_feature_vector = get_graph_features(I,max_no_of_hinges,max_no_of_
         t = nodes(2);
         from = [from f];
         to =[to t];
+        w = norm(H(nodes(1),:) - H(nodes(2),:));
+        weights = [weights w];
     end
 
   
-    G = graph(from,to);
-    
-   
+    G = graph(from,to,weights);   
     E = [from' to'];
     adj = adjacency(G);
     inc = incidence(G);
 
     nodes = numnodes(G);
+    
+    %Shortest paths:
+    if shortest_path == true
+        SPs_vec = ft_SPs;
+        start_ixs = [1 8 14 19 23 26 28];
+        for node = 1:(nH-1)
+            targets = [node+1:nH];
+            [~,SPs] = shortestpathtree(G,node,targets);
+            SPs_vec(start_ixs(node):(start_ixs(node)+length(SPs)-1)) = SPs;
+        end
+        longest_path = max(SPs_vec);
+    end
+    
+    
     %Centrality
     betweenness = centrality(G,'betweenness');
     degrees = centrality(G,'degree');
@@ -138,6 +155,7 @@ function graph_feature_vector = get_graph_features(I,max_no_of_hinges,max_no_of_
     ft_shortest_circle_length = length_min / 5;
     ft_cluster_coef = init_ft_hinge;
     ft_cluster_coef(1:length(cluster_coef)) = cluster_coef;
+    if shortest_path == true; ft_shortest_paths = SPs_vec ./ longest_path; else ft_shortest_paths = [];end
     
     graph_feature_vector =[ft_betweenness, ft_degrees, ft_closeness,...
         ft_pagerank, ft_eigenvector, ft_graph_density,...
@@ -147,7 +165,7 @@ function graph_feature_vector = get_graph_features(I,max_no_of_hinges,max_no_of_
         ft_eccentricity, ft_radius, ft_diameter, ft_part_of_center,...
         ft_part_of_periphery, ft_no_of_cycles, ft_part_of_longest, ...
         ft_part_of_shortest, ft_longest_circle_length,...
-        ft_shortest_circle_length, ft_cluster_coef];
+        ft_shortest_circle_length, ft_cluster_coef, ft_shortest_paths];
 end
     
     

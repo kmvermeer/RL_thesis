@@ -3,5 +3,9 @@ function [Q,F] = get_Q_NN(s,a,weights,layer_settings)
    
     [F] = get_features(s,a);
         
-    Q = eval_NN(weights,F,layer_settings,true);
+    try
+        Q = eval_NN(weights,F,layer_settings,true);
+    catch
+        keyboard
+    end
 end

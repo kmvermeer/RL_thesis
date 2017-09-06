@@ -19,7 +19,9 @@ function [F,nF] = get_features(s,a)
     %Boolean list of selected bar to act on:
     selected_bar = zeros(1,max_no_of_bars);
     link = ceil(a/2);
-    selected_bar(link) = 1;
+    if link<max_no_of_bars
+        selected_bar(link) = 1;
+    end
     
     %% Things to notice about the current structure:
     nM_current = size(I_orig,1);
@@ -107,14 +109,27 @@ function [F,nF] = get_features(s,a)
     grounded_bars = unique([ground1;ground2]);
     con2base(grounded_bars) = 1;
     
+    %Determine hinge locations wrt centre of mechanism
+    center = mean(H);
+    rel_pos = (H - center)./5;
+    xpos_nodes = zeros(1,max_no_of_hinges);
+    ypos_nodes = zeros(1,max_no_of_hinges);
+    xpos_nodes(1:size(rel_pos,1)) = rel_pos(:,1);
+    ypos_nodes(1:size(rel_pos,1)) = rel_pos(:,2);
+    
+    %Determine path length among hinges
+    
+    
+    
+    
     %% Getting graph-type features from seperate function:
     
-    graph_features = get_graph_features(I,max_no_of_hinges,max_no_of_bars);
+    graph_features = get_graph_features(I,H,max_no_of_hinges,max_no_of_bars,true);
     
     %% Assembling F(s) into vector
     sub_F = [nM_norm,nH_norm,hinge_active,bar_active,rel_L,...
             rel_angle,con2base,isitT,isitD,selected_bar,...
-            bar_exist,no_of_cons_to_link,graph_features];
+            bar_exist,no_of_cons_to_link,graph_features,xpos_nodes,ypos_nodes];
 
 %     sub_F = [nM_norm,isitT,isitD,selected_bar,bar_exist,no_of_cons_to_link];
     no_sub_F = size(sub_F,2);
@@ -128,7 +143,8 @@ function [F,nF] = get_features(s,a)
 %     idx_end = idx_start+no_sub_F-1;
 %     F(idx_start:idx_end) = sub_F;
 
-    F = [bias_feature,sub_F];         %Turn on to go back to small F (no..
+%     F = [bias_feature,sub_F];         %Turn on to go back to small F (no..
 %                                      spreading per action).
+    F = [sub_F];
     nF = size(F,2);
     end

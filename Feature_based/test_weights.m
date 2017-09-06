@@ -30,4 +30,5 @@ score = get_reward(I,H,true)
 % animateIH(I,H);
 
 total_reward
+disp(alist_all(end-5:end,:))
 disp(a_list)

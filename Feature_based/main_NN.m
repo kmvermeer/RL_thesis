@@ -1,11 +1,5 @@
-clear variables
-clc
-close all
-addpath ../evaluation_using_FEM/
-addpath ../basic_RL_Hod/
-addpath ../NN/
-addpath ../graphs/
 
+close all
 
 tstart = tic;
 settings_file;
@@ -24,15 +18,11 @@ random_bool_list = [];
 acounter = zeros(1,nA);
 mean_hidden_errors = zeros(1,epochs*6);
 %% Init NN
+[layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,hidden_multiplier] = get_NN_settings(settings);
 nIn = nF;
-nHidden = round(4*nF);
 nOut = 1;
-
+nHidden = round(hidden_multiplier*nF);
 layer_settings.sizes = [nIn,nHidden,nOut];
-layer_settings.styles = {'Sigmoid','linear'};
-lr = 0.3;
-decay_m = 0.9; 
-decay_RMS = 0.99;
 
 for l = 1:length(layer_settings.sizes)-1
     weight_factor = sqrt(6)/(sqrt(layer_settings.sizes(l)+layer_settings.sizes(l+1)+2));
@@ -68,26 +58,22 @@ while counter < epochs
         if (size(I,1) >= (max_no_of_bars-2) || step_number>7)
             %perform update alternative
             target = r;
-            delta = target-Q;
-            [new_weights,grad,MS_grad,output,error] = train_NN (weights, F, target, ...
-                                                    layer_settings, lr, decay_m,...
-                                                    decay_RMS, grad, MS_grad, counter,...
-                                                    'Adams');
-            weights = new_weights;
+            delta = target-Q;            
             term = 1;
 
         else
             [Q_new,a_new,random_bool] = choose_action_NN(s_new,weights,a_list,counter,layer_settings);
             target = r+discount_rate*Q_new;
-            [new_weights,grad,MS_grad,output,error] = train_NN (weights, F, target, ...
-                                                    layer_settings, lr, decay_m,...
-                                                    decay_RMS, grad, MS_grad, counter,...
-                                                    'Adams');
-            weights = new_weights;
             s = s_new;
             a = a_new;
             
         end
+        [new_weights,grad,MS_grad,output,error] = train_NN (weights, F, target, ...
+                                                    layer_settings, lr, decay_m,...
+                                                    decay_RMS, grad, MS_grad, counter,...
+                                                    NN_trainer_style);
+        weights = new_weights;
+      
         total_reward = r + total_reward;
         error_list = [error_list;error];
         rlist = [rlist;r];
@@ -114,8 +100,7 @@ end
 disp('Finished all epochs')
 load train
 sound(y,2*Fs)
-toc(tstart)
-
+run_time = toc(tstart);
 
 
 

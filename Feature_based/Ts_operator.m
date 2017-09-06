@@ -1,6 +1,7 @@
 function [I_new,H_new,feasible_design] = Ts_operator(I,H,link)
     feasible_design =1;
-    %Determine new hinge location and add to H
+    
+    %% Determine new hinge location and add to H
     base_link_hinges = find(I(link,:));
     base_vec = diff(H(base_link_hinges,:))';
     nM = size (I,1);
@@ -57,7 +58,11 @@ function [I_new,H_new,feasible_design] = Ts_operator(I,H,link)
 
     %Determine closes hinge
     cross_list = [0 0 0];
-    drops = [min(base_link_hinges),max(base_link_hinges),size(H_new,1)];
+    %some hinges should not be considered as candidates, as they are either
+    %already connected to the base link, or are the new hinge itself. The
+    %'drops' vector describes al indices that should be dropped from
+    %consideration.
+    drops = [min(base_link_hinges),max(base_link_hinges),size(H_new,1)];   
     H_new_base = H_new;
     H_new_base(drops,:) = [];
 
@@ -67,7 +72,9 @@ function [I_new,H_new,feasible_design] = Ts_operator(I,H,link)
 
         %FIX: if no non-crosser can be found, just select closest.
         if size(H_for_closest,1)==0
-            closest_hinge = dsearchn(H_new_base,newpos');
+            closest_hinge_in_base = dsearchn(H_new_base,newpos');
+            hing_no_in_closestH = ismember(H_new,H_new_base(closest_hinge_in_base,:),'rows');
+            closest_hinge = find(hing_no_in_closestH);
             break
         end
 
