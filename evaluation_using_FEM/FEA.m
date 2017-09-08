@@ -148,4 +148,10 @@ function [xout,values]=FEA(I,x0,phi0,L,input_link,freenodes,turnme_hinge)
     values = [values.left;values.right(2:end,:)];%Removing double appearance of x0
     xout = [xout.left;xout.right(2:end,:)];%Removing double appearance of x0
     
+    %If there are more values than a full circle should describe, we
+    %select only the first full rotation.
+    if length(xout)>(evals+1)
+        xout = xout(1:(evals+1),:);
+        values = values(1:(evals+1),:);
+    end
 end

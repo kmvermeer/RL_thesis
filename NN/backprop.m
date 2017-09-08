@@ -1,5 +1,6 @@
 function dEdW = backprop(weights,layer_settings,input,truth)
-    
+   
+  
     nL = length(weights);
     layer_sizes = layer_settings.sizes;
     style = layer_settings.styles;
@@ -8,6 +9,16 @@ function dEdW = backprop(weights,layer_settings,input,truth)
     else
         dropout_rates = zeros(1,nL+1);
     end
+    
+    if length(fields(layer_settings)) >= 4
+        regularization = layer_settings.regularization;
+        L1 = regularization(1);
+        L2 = regularization(2);
+    else
+        L1 = 0;
+        L2 = 0;
+    end
+    
     
     %Create dropout masks
     for layer = 1:(length(layer_sizes)-1)
@@ -38,20 +49,15 @@ function dEdW = backprop(weights,layer_settings,input,truth)
         delta_O = dEdyO .* activation_NN(yO,style2,true);
         dEdb2 = delta_O;
         dEdw2 = [(yH' *delta_O).*masks{2}'; dEdb2];
-%         dEdw2 = 
-%         dEdw2 = [(yH' *delta_O) + L2*w2(1:end-1); dEdb2]; Add
-%         regularization
         
         %Backprop from hidden to input
         delta_H = (delta_O*w2(1:nH,:))'  .*activation_NN(yH,style1,true).*masks{2};
         dEdb1 = delta_H;
         dEdw1 = [yI' *delta_H.*masks{1}'; dEdb1];
-%         dEdw1 = [yI' *delta_H + L2*w1(1:end-1,:); dEdb1]; Add
-%         regularization
         
+        dEdW{1} = dEdw1+[L2*weights{1}(1:end-1,:)+L1*sign(weights{1}(1:end-1,:)) ; zeros(size(dEdb1))];
+        dEdW{2} = dEdw2+[L2*weights{2}(1:end-1,:)+L1*sign(weights{2}(1:end-1,:)) ; zeros(size(dEdb2))];
         
-        dEdW{1} = dEdw1;
-        dEdW{2} = dEdw2;
  
     elseif nL == 3
         w1 = weights{1};
@@ -94,26 +100,9 @@ function dEdW = backprop(weights,layer_settings,input,truth)
         
 
     end 
-    %Add momentum
-    mr = 0.5;
+
 end
 
-% Q = eval_NN()
-% sens = zeros(1,nF);
-% delta - 0.1;
-% for k = 1:nF
-%     Fpos = F;
-%     Fpos(k) = Fpos(k)+delta;
-%     Fmin = F;
-%     Fmin(k) = Fmin(k)-delta;
-%     
-%     
-%     Q_dpos = eval_NN(Fpos)
-%     Q_dmin = eval_NN(Fmin)
-%     sens(k) = (Q_dpos - Q_dmin) / (2*delta);
-% end
-%     
-% eval_NN(
 
 
 

@@ -6,17 +6,16 @@ settings_file;
 counter = 1;
 [I,H] = initIH;
 s = get_state(I,H);
+initial_reward = get_reward(I,H);
 [~,nF] = get_features(s,1);
-rlist = [0];
-deltalist = [0];
 Qlist_all = [];
 alist_all = [];
-delta_hidden_list = [];
-delta_list = [];
+total_reward_list = zeros(1,epochs);
 error_list = [];
 random_bool_list = [];
 acounter = zeros(1,nA);
-mean_hidden_errors = zeros(1,epochs*6);
+
+
 %% Init NN
 [layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,hidden_multiplier] = get_NN_settings(settings);
 nIn = nF;
@@ -34,7 +33,6 @@ MS_grad = cellfun(@(x) x*0,weights,'uni',false);
 %% Initialize basic 4bar starting point mechanism
 while counter < epochs
     
-    tic
     TDlist = '';
     linklist = [];
     a_list = zeros(1,10);
@@ -44,9 +42,11 @@ while counter < epochs
     term = 0;
     Qlist = zeros(1,10);
     step_number = 1;
+    total_reward = initial_reward;
+
     %% Perform SARSA
     while term == 0
-        total_reward = 0;
+        tic
         random_bool_list = [random_bool_list;random_bool];
         a_list(step_number) = a;
         acounter(a) = acounter(a)+1;
@@ -76,12 +76,12 @@ while counter < epochs
       
         total_reward = r + total_reward;
         error_list = [error_list;error];
-        rlist = [rlist;r];
         Qlist(step_number) = Q;
         step_number = step_number+1;
-        counter = counter+1;
-    end
         
+    end
+    total_reward_list(counter) = total_reward;
+    counter = counter+1;  
     Qlist(step_number) = Q_new;
     Qlist_all = [Qlist_all;Qlist];
     alist_all = [alist_all;a_list];
@@ -98,8 +98,8 @@ while counter < epochs
 end
 
 disp('Finished all epochs')
-load train
-sound(y,2*Fs)
+% load train
+% sound(y,2*Fs)
 run_time = toc(tstart);
 
 

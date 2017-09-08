@@ -4,7 +4,7 @@ function [output] = activation_NN(input,style,varargin)
     switch style
         case 'Sigmoid'
             if nargin ==3 & varargin{1} == true
-                output = input.*(1-input)+0.1;  %Add 0.1: Fahlman's trick
+                output = input.*(1-input)+0.1;  %Add 0.1: Fahlman's trick (intereres with gradient checks!)
             else                
                 output = 1./(1 + exp(-input));
             end

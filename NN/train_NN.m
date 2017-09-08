@@ -2,16 +2,14 @@
 %inputs, truth
 %output: new_weights, output, error
 
-function [new_weights,grad,MS_grad,output,error] = train_NN (weights, input, truth, layer_settings, lr, decay_m, decay_RMS, grad, MS_grad, epoch, update_style)
+                                                
+function [new_weights,grad,MS_grad,output,error,dEdW] = train_NN (weights, input, truth, layer_settings, lr, decay_m, decay_RMS, grad, MS_grad, epoch, update_style)
 %% Training
     layer_sizes = layer_settings.sizes;
-    layer_styles = layer_settings.styles;
     % Backprop to find dEdW
     dEdW = backprop(weights,layer_settings,input,truth);
     
     %regularization:
-    L2 = 0;
-    sum_of_weights = 0;
     
     % Using Adams to update weights (https://arxiv.org/pdf/1412.6980v9.pdf)
     for layer = 1:(length(layer_sizes)-1)
@@ -49,11 +47,7 @@ function [new_weights,grad,MS_grad,output,error] = train_NN (weights, input, tru
             case 'SGD'
                 grad{layer} = - lr * dEdW{layer};
                 new_weights{layer} = weights{layer} + grad{layer};
-            case 'SGDL2'
-                weights_zero_bias = [weights{layer}(1:end-1,:);zeros(1,layer_sizes(layer+1))];
-                grad{layer} = - lr * (dEdW{layer}  + L2*weights_zero_bias );
-                new_weights{layer} = weights{layer} + grad{layer};
-                sum_of_weights = sum_of_weights+1/2*sum(weights_zero_bias(:))^2;
+           
             case 'SGD_momentum'
                 grad{layer} = decay_m * grad{layer} - lr * dEdW{layer};
                 new_weights{layer} = weights{layer} + grad{layer};
@@ -74,5 +68,5 @@ function [new_weights,grad,MS_grad,output,error] = train_NN (weights, input, tru
     
     
     
-    error = 1/2*(truth - output).^2 + L2*sum_of_weights;
+    error = 1/2*(truth - output).^2;
 end
