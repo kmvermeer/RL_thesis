@@ -55,7 +55,7 @@ while counter < epochs
         [s_new,r,feasible_design] = stepper(s,a,negative_reward);
         [I,H] = state2IH(s_new);
         
-        if (size(I,1) >= (max_no_of_bars-2) || step_number>7)
+        if (size(I,1) > (max_no_of_bars-2) || step_number>7)
             %perform update alternative
             target = r;
             delta = target-Q;            

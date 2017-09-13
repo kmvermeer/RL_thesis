@@ -28,6 +28,13 @@ settings.hidden_multiplier = hidden_multiplier;
 settings.regularization = regularization;
 settings.negative_reward = negative_reward;
 
+disp('Setting up parallel pool')
+try 
+    gcp;
+catch 
+    parallel_pool = parpool('local');
+end
 %Run main_NN
+disp('Running main file')
 main_NN;
-
+delete(parallel_pool)
