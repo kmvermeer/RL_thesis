@@ -1,10 +1,10 @@
-function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,layer_settings)
+function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,layer_settings,expl_factor)
     settings_file
     valid = true;
     [I,H] = state2IH(s);
     nM=size(I,1);
     nA = 2*max_no_of_bars;
-    N0 = epochs/100;
+    N0 = epochs/expl_factor;
     if counter == 'deterministic'
         epsilon = 0;
     else

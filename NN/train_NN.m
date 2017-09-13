@@ -26,7 +26,7 @@ function [new_weights,grad,MS_grad,output,error,dEdW] = train_NN (weights, input
                 %Perform update
                 new_weights{layer} = weights{layer} -lr * grad_iter ./ (sqrt(MS_grad_iter) +1e-8);
                 
-                case 'Adams_maxnorm'
+            case 'Adams_maxnorm'
                 %Determine momentum-like variable
                 grad{layer} = decay_m*grad{layer} + (1-decay_m) * dEdW{layer};
                 grad_iter = grad{layer}./(1-decay_m^epoch);

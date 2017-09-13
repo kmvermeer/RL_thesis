@@ -16,6 +16,7 @@ NN_trainer_style = 'Adams';
 epochs = 5000;
 hidden_multiplier = .75;
 negative_reward = -5;
+expl_factor = 100;
 
 %Pack settings into Cell structure
 settings.layer_settings = layer_settings;
@@ -27,6 +28,7 @@ settings.epochs = epochs;
 settings.hidden_multiplier = hidden_multiplier;
 settings.regularization = regularization;
 settings.negative_reward = negative_reward;
+settings.expl_factor = expl_factor
 
 disp('Setting up parallel pool')
 try 
@@ -37,4 +39,5 @@ end
 %Run main_NN
 disp('Running main file')
 main_NN;
-delete(parallel_pool)
+delete(gcp('nocreate'));
+

@@ -13,7 +13,7 @@ for k = 1:nF
     sens(k) = (Q_dpos - Q_dmin) / (2*delta);
     sens(F == 0) = 0;
 end
-
+figure
 bar(sens)
 title('Q-value sensitivity wrt features')
 grid on
