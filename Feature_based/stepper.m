@@ -1,4 +1,4 @@
-function [s_new,r,feasible_design] = stepper(s,a)
+function [s_new,r,feasible_design] = stepper(s,a,negative_reward)
     
     settings_file
     [I,H] = state2IH(s);
@@ -18,7 +18,7 @@ function [s_new,r,feasible_design] = stepper(s,a)
         [I,H,feasible_design] = advance_mech(I,H,operator,link);
         s_new = get_state(I,H);
         if feasible_design == 1 
-            [r,feasible_design] = get_reward(I,H);
+            [r,feasible_design] = get_reward(I,H,negative_reward);
         else
             r = negative_reward;
         end

@@ -1,5 +1,8 @@
 
-function [layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,hidden_multiplier] = get_NN_settings(settings)
+function [layer_settings,lr,decay_m,decay_RMS,...
+          NN_trainer_style,epochs,hidden_multiplier,...
+          negative_reward] = get_NN_settings(settings)
+      
     layer_settings = settings.layer_settings;
     lr = settings.lr;
     decay_m = settings.decay_m;
@@ -7,4 +10,6 @@ function [layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,hidden_mul
     NN_trainer_style = settings.NN_trainer_style;
     epochs = settings.epochs;
     hidden_multiplier = settings.hidden_multiplier;
+    negative_reward = settings.negative_reward;
+
 end

@@ -1,4 +1,4 @@
-function [r,feasible_design] = get_reward(I,H,varargin)
+function [r,feasible_design] = get_reward(I,H,negative_reward,varargin)
     settings_file;
     Htrans = H';
     x0 = Htrans(:);
@@ -49,7 +49,7 @@ function [r,feasible_design] = get_reward(I,H,varargin)
 
     %% Determine scores and display them
     plot_trajectories = false;
-    if nargin == 3
+    if nargin == 4
         plot_trajectories = varargin{1};
     end
     if sum(isnan(values)) == 0 && size(xout,1)>5

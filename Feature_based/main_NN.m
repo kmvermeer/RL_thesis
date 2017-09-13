@@ -17,7 +17,7 @@ acounter = zeros(1,nA);
 
 
 %% Init NN
-[layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,hidden_multiplier] = get_NN_settings(settings);
+[layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,hidden_multiplier,negative_reward] = get_NN_settings(settings);
 nIn = nF;
 nOut = 1;
 nHidden = round(hidden_multiplier*nF);
@@ -52,7 +52,7 @@ while counter < epochs
         acounter(a) = acounter(a)+1;
         [Q,F] = get_Q_NN(s,a,weights,layer_settings);
         
-        [s_new,r,feasible_design] = stepper(s,a);
+        [s_new,r,feasible_design] = stepper(s,a,negative_reward);
         [I,H] = state2IH(s_new);
         
         if (size(I,1) >= (max_no_of_bars-2) || step_number>7)

@@ -7,14 +7,15 @@ clear variables
 
 layer_settings.styles = {'Sigmoid','linear'};
 layer_settings.dropout_rates = [0 0  0];
-regularization = [1e-4 1e-4]; %L1 and L2 regularization
-regularization = [0 0];
+regularization = [1e-4 1e-3]; %L1 and L2 regularization
+% regularization = [0 0];
 lr = 0.1;
-decay_m = 0.95; 
+decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 2500;
-hidden_multiplier = 3;
+epochs = 5000;
+hidden_multiplier = .75;
+negative_reward = -5;
 
 %Pack settings into Cell structure
 settings.layer_settings = layer_settings;
@@ -25,7 +26,8 @@ settings.NN_trainer_style = NN_trainer_style;
 settings.epochs = epochs;
 settings.hidden_multiplier = hidden_multiplier;
 settings.regularization = regularization;
+settings.negative_reward = negative_reward;
 
 %Run main_NN
-main_NN_MC;
+main_NN;
 
