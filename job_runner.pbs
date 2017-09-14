@@ -8,6 +8,9 @@ cd /home/kmvermeer/thesis/RL_thesis/
 
 module load matlab/2016b
 
-echo "starting run at: 'date' "
+variable_ix=$i
+export variable_ix
 
-matlab -nosplash -nodesktop -singleCompThread -r "tester"
+echo "starting run at: 'date' "
+matlab -nosplash -nodesktop -singleCompThread -r “grid_search”
+

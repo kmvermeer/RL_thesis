@@ -3,14 +3,13 @@ addpath ../evaluation_using_FEM/
 addpath ../basic_RL_Hod/
 addpath ../NN/
 addpath ../graphs/
-clear variables
+clearvars('-except','variable_ix');
 
-% disp('Setting up parallel pool')
-% try 
-%     gcp;
-% catch 
-%     parallel_pool = parpool('local');
-% end
+try
+    variable_ix = str2num(getenv('variable_ix'));
+catch
+    disp('Running localy, no cluster')
+end
 
 disp('Setting up grid search')
 
@@ -21,7 +20,7 @@ lr = 0.1;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 2500;
+epochs = 2;
 hidden_multiplier = .75;
 negative_reward = -5;
 
@@ -48,6 +47,13 @@ vars.neg_rewards = [-25 -5 -1 0];
 vars.expl_factors = [30,100,300];
 vars.hidden_mltps = [.5 1 2 4];
 names = fieldnames(vars);
+
+try
+    names = names(variable_ix);             %This is for cluster running
+catch
+    names = names;
+end
+        
 
 for V = 1:length(names)
     values = getfield(vars,names{V});
