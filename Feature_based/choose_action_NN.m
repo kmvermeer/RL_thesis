@@ -39,7 +39,7 @@ function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,la
                                         %In that case, the value 9999 is assigned, 
                                         %which will never conflict with any of the future choices.
 
-        parfor a = 1:nA
+        for a = 1:nA
             if ismember(a,a_list(end))
                 Q_new = 0;
                 display('prevented double')

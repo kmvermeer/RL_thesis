@@ -5,12 +5,12 @@ addpath ../NN/
 addpath ../graphs/
 clear variables
 
-disp('Setting up parallel pool')
-try 
-    gcp;
-catch 
-    parallel_pool = parpool('local');
-end
+% disp('Setting up parallel pool')
+% try 
+%     gcp;
+% catch 
+%     parallel_pool = parpool('local');
+% end
 
 disp('Setting up grid search')
 
@@ -94,6 +94,6 @@ for V = 1:length(names)
     end
 end
        
-delete(gcp('nocreate'))
+% delete(gcp('nocreate'))
 exit
 

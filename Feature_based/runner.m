@@ -30,14 +30,14 @@ settings.regularization = regularization;
 settings.negative_reward = negative_reward;
 settings.expl_factor = expl_factor
 
-disp('Setting up parallel pool')
-try 
-    gcp;
-catch 
-    parallel_pool = parpool('local');
-end
+% disp('Setting up parallel pool')
+% try 
+%     gcp;
+% catch 
+%     parallel_pool = parpool('local');
+% end
 %Run main_NN
 disp('Running main file')
 main_NN;
-delete(gcp('nocreate'));
+% delete(gcp('nocreate'));
 
