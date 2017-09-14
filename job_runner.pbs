@@ -4,12 +4,11 @@
 #PBS -m abe
 
 
-cd /home/kmvermeer/thesis/RL_thesis/Feature_based/
+cd /home/kmvermeer/thesis/RL_thesis/
 
 module load matlab/2016b
 
 variable_ix=$i
 export variable_ix
 
-echo $variable_ix
-matlab -nosplash -nodesktop -singleCompThread -r "grid_search"
+matlab -nosplash -nodesktop -singleCompThread -r “Feature_based/grid_search"
