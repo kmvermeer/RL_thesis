@@ -4,7 +4,7 @@
 #PBS -m abe
 
 
-cd /home/kmvermeer/thesis/RL_thesis/
+cd /home/kmvermeer/thesis/RL_thesis/Feature_based/
 
 module load matlab/2016b
 
