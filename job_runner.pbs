@@ -11,5 +11,5 @@ module load matlab/2016b
 variable_ix=$i
 export variable_ix
 
-echo "starting run at: 'date' "
+echo $variable_ix
 matlab -nosplash -nodesktop -singleCompThread -r "grid_search"
