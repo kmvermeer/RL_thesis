@@ -1,4 +1,4 @@
-function [final_score,id_max,straightness_score_list,length_straight_sections,aspect_ratio_list]= trajectory_analysis(xout,values,I,x0,draw_plot)
+function [final_score,id_max,straightness_score_list,length_straight_sections,aspect_ratio_list]= trajectory_analysis(xout,values,I,H,x0,draw_plot)
        %This function takes in all trajectories from the simulation and
        %returns an objective score, along with the underlying numbers.
        
@@ -86,8 +86,19 @@ function [final_score,id_max,straightness_score_list,length_straight_sections,as
         straightness_score_list(i) = straightness_score;
         aspect_ratio_list(i) = aspect_ratio;
         if draw_plot == true
-            text(trajectory(1,1)+0.2,trajectory(1,2)+0.2,sprintf('Score equals: %2.1f',straightness_score*length_straight_section))
+            text(trajectory(1,1)+0.2,trajectory(1,2)+0.2,sprintf('Score: %2.1f',straightness_score*length_straight_section))
+            for h = 1:size(H,1)
+                text(H(h,1),H(h,2)+0.2,sprintf('Hinge %i',h))
+            end
+            for j = 1:size(I,1)
+               	nodes = H(get_connections(I,j,'bar'),:);
+                midx = mean(nodes(:,1));
+                midy = mean(nodes(:,2));
+                text(midx,midy+0.2,sprintf('Bar %i',j))
+            end
+                
         end
+        
     end
     
     %% Consolidate scores and determine highscore

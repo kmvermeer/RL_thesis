@@ -35,8 +35,11 @@ function [F,nF] = get_features(s,a)
     if link>nM_current
         no_of_cons_to_link = 0;
     else
-        connections = get_connections(I_orig,link,'bar');
-        no_of_cons_to_link = length(connections)/4; %division to semi-normalize
+        CH = get_connections(I_orig,link,'bar');
+        BC = [get_connections(I_orig,CH(1),'hinge');get_connections(I_orig,CH(2),'hinge')];
+        BC(BC == link) = [];
+        connected_bars = unique(BC);
+        no_of_cons_to_link = length(connected_bars)/4; %division to semi-normalize
     end
     
     
@@ -75,7 +78,7 @@ function [F,nF] = get_features(s,a)
 
 
     %Get relative angles per hinge
-    rel_angle = zeros(1,max_no_of_bars);
+    rel_angle = zeros(1,max_no_of_hinges);
     for k = 1:nH
         bars = get_connections(I,k,'hinge');
         nbars = length(bars);

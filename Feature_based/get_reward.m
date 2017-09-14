@@ -54,7 +54,7 @@ function [r,feasible_design] = get_reward(I,H,negative_reward,varargin)
     end
     if sum(isnan(values)) == 0 && size(xout,1)>5
         [final_score,id_max,straightness_score_list,length_straight_sections]=... 
-            trajectory_analysis(xout,values,I,x0,plot_trajectories);
+            trajectory_analysis(xout,values,I,H,x0,plot_trajectories);
         
         
         scores = straightness_score_list.*length_straight_sections;

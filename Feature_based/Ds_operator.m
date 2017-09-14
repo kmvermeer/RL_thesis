@@ -1,4 +1,7 @@
 function [I_new,H_new,feasible_design] = Ds_operator(I,H,link)
+    %This Lipson inspired operator ads a new hinge to the system and
+    %connects it via two bars to the end-point-hinges of the bar given in
+    %input 'link'.
     nM = size(I,1);
     feasible_design = 1;
 
