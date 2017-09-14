@@ -8,7 +8,7 @@ cd /home/kmvermeer/thesis/RL_thesis/
 
 module load matlab/2016b
 
-variable_ix=$i
+variable_ix=$variable_ix
 export variable_ix
 
 matlab -nosplash -nodesktop -singleCompThread -r "cd Feature_based;grid_search"
