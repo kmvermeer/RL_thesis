@@ -3,10 +3,13 @@ addpath ../evaluation_using_FEM/
 addpath ../basic_RL_Hod/
 addpath ../NN/
 addpath ../graphs/
-clearvars('-except','variable_ix');
+clear variables
 
+disp('working till after clearvars')
 try
+    %for i in {1..8}; do qsub -v variable=$i job_runner.pbs; done
     variable_ix = str2num(getenv('variable_ix'));
+    fprintf('Running variable ix %i',variable_ix);
 catch
     disp('Running localy, no cluster')
 end
