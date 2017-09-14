@@ -12,5 +12,4 @@ variable_ix=$i
 export variable_ix
 
 echo "starting run at: 'date' "
-matlab -nosplash -nodesktop -singleCompThread -r “grid_search”
-
+matlab -nosplash -nodesktop -singleCompThread -r "grid_search"
