@@ -1,3 +1,4 @@
+disp('hello world')
 warning off;
 addpath ../evaluation_using_FEM/
 addpath ../basic_RL_Hod/
@@ -7,7 +8,7 @@ clear variables
 
 disp('working till after clearvars')
 try
-    %for i in {1..8}; do qsub -v variable=$i job_runner.pbs; done
+    %for i in {1..2}; do qsub -v variable_ix=$i job_runner.pbs; done
     variable_ix = str2num(getenv('variable_ix'));
     fprintf('Running variable ix %i',variable_ix);
 catch
