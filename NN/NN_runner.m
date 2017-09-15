@@ -6,8 +6,8 @@ close all
 close all
 
 %% Network settings
-layer_settings.sizes = [2,30,5,1];
-layer_settings.styles = {'Sigmoid','Sigmoid','Sigmoid'};
+layer_settings.sizes = [2,30,1];
+layer_settings.styles = {'leaky_ReLU','tanh'};
 layer_settings.dropout_rates = [0 0 0];
 layer_settings.regularization = [1e-4 1e-7];
 lr = .1;

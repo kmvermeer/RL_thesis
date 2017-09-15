@@ -6,7 +6,7 @@ addpath ../graphs/
 clear variables
 
 try
-    %for i in {1..4}; do qsub -v variable_ix=$i job_runner.pbs; done
+    %for i in {1..28}; do qsub -v variable_ix=$i job_runner.pbs; done
     variable_ix = str2num(getenv('variable_ix'));
     save('variable_name','variable_ix');
     fprintf('Running variable ix %i',variable_ix);
@@ -16,6 +16,8 @@ end
 
 disp('Setting up grid search')
 
+
+
 layer_settings.styles = {'Sigmoid','linear'};
 layer_settings.dropout_rates = [0 0  0];
 regularization = [0 0]; %L1 and L2 regularization
@@ -23,7 +25,7 @@ lr = 0.1;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 3500;
+epochs = 2;
 hidden_multiplier = .75;
 negative_reward = -5;
 
@@ -41,67 +43,85 @@ settings.expl_factor = 100;
 
 base_settings = settings;
 
-vars.DR1s = [0 0.2];                                             %layer settings
-vars.DR2s = [0 0.30];                                            %layer settings
-vars.layer_types = {'leaky_ReLU','Sigmoid'};                     %layer settings
+vars.DR1s = [0.1 0.2];                                             %layer settings
+vars.DR2s = [0.30 0.5];                                            %layer settings
+vars.layer_types = {'tanh','ReLU','leaky_ReLU'};                     %layer settings
 vars.trainer_styles = {'SGD','SGD_Nesterov_momentum','Adams'};
-vars.LRs = [1e-3 ,1e-2 ,1e-1,1];
-vars.neg_rewards = [-25 -5 -1 0];
-vars.expl_factors = [30,100,300];
-vars.hidden_mltps = [.5 1 2 4];
+vars.LRs = [1e-3 ,1e-2 ,1];
+vars.neg_rewards = [-25 -1 0];
+vars.expl_factors = [30,300];
+vars.hidden_mltps = [.25 .5 4 16];
+vars.L1 = [1e-4 1e-3 1e-2];
+vars.L2 = [1e-4 1e-3 1e-2];
+
+var_lengths = cellfun(@length, struct2cell(vars(:)));
+vars_ix = min(find(cumsum(var_lengths)>variable_ix,1));
+value_ix = variable_ix - sum(var_lengths(1:vars_ix-1));
+
 names = fieldnames(vars);
 
-try
-    names = names(variable_ix);             %This is for cluster running
-catch
-    names = names;
-end
-        
+%Setting up the right variable name index and value index
+       
 
-for V = 1:length(names)
-    values = getfield(vars,names{V});
-    for ix = 1:length(values)
-        settings = base_settings;
-        switch names{V}
-            case 'DR1s'
-                settings.layer_settings.dropout_rates(2) = values(ix);
-                value_string = num2str(values(ix));
+V = vars_ix;
+values = getfield(vars,names{V});
+ix = value_ix;
 
-            case 'DR2s'
-                settings.layer_settings.dropout_rates(3) = values(ix);
-                value_string = num2str(values(ix));
+switch names{V}
+    case 'DR1s'
+        settings.layer_settings.dropout_rates(1) = values(ix);
+        value_string = num2str(values(ix));
+        if values(ix)>0
+            settings.lr = 1;
+        end
 
-            case 'layer_types'
-                settings.layer_settings.styles(1) = values(ix);
-                value_string = values{ix};         
-                
-            case 'trainer_styles'
-                settings.NN_trainer_style = values{ix};
-                value_string = values{ix};
-                
-            case 'LRs'
-                settings.LRs = values(ix);
-                value_string = num2str(values(ix));
-                
-            case 'neg_rewards'
-                settings.negative_reward = values(ix);
-                value_string = num2str(values(ix));
-            case 'expl_factors'
-                settings.N0 = values(ix);
-                value_string = num2str(values(ix));
-            case 'hidden_mltps'
-                settings.hidden_multiplier = values(ix);
-                value_string = num2str(values(ix));
-        end        
-   
-        save_string = strcat('../results/',names{V},'_',value_string,'.mat');
-        disp(save_string)           
-        main_NN
-        save(save_string,'weights','error_list','Qlist_all','alist_all',...
-            'run_time','total_reward_list','settings','total_reward')
-        fprintf('Finished run no %i over %s',[ix names{V}])
-    end
-end
+    case 'DR2s'
+        settings.layer_settings.dropout_rates(2) = values(ix);
+        value_string = num2str(values(ix));
+        if values(ix)>0
+            settings.lr = 1;
+        end
+
+    case 'layer_types'
+        settings.layer_settings.styles(1) = values(ix);
+        value_string = values{ix};         
+
+    case 'trainer_styles'
+        settings.NN_trainer_style = values{ix};
+        value_string = values{ix};
+        if not(strcmp(settings.NN_trainer_style,'Adams'))
+            settings.lr = 1e-3;             %Decreasing stepsize for SGD type solutions
+        end
+
+    case 'LRs'
+        settings.lr = values(ix);
+        value_string = num2str(values(ix));
+
+    case 'neg_rewards'
+        settings.negative_reward = values(ix);
+        value_string = num2str(values(ix));
+    case 'expl_factors'
+        settings.N0 = values(ix);
+        value_string = num2str(values(ix));
+    case 'hidden_mltps'
+        settings.hidden_multiplier = values(ix);
+        value_string = num2str(values(ix));
+    case 'L1'
+        settings.regularization(1) = values(ix);
+        value_string = num2str(values(ix));
+    case 'L2'
+        settings.regularization(2) = values(ix);
+        value_string = num2str(values(ix));
+end        
+
+save_string = strcat('../results/',names{V},'_',value_string,'.mat');
+disp(save_string)           
+main_NN
+save(save_string,'weights','error_list','Qlist_all','alist_all',...
+    'run_time','total_reward_list','settings','total_reward')
+fprintf('Finished run no %i over %s',[ix names{V}])
+    
+
        
 % delete(gcp('nocreate'))
 exit
