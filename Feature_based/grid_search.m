@@ -25,7 +25,7 @@ lr = 0.1;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 2;
+epochs = 5000;
 hidden_multiplier = .75;
 negative_reward = -5;
 
