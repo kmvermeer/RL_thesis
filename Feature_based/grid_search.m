@@ -55,7 +55,7 @@ vars.L1 = [1e-4 1e-3 1e-2];
 vars.L2 = [1e-4 1e-3 1e-2];
 
 var_lengths = cellfun(@length, struct2cell(vars(:)));
-vars_ix = min(find(cumsum(var_lengths)>variable_ix,1));
+vars_ix = min(find(cumsum(var_lengths)>=variable_ix,1));
 value_ix = variable_ix - sum(var_lengths(1:vars_ix-1));
 
 names = fieldnames(vars);
