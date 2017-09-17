@@ -28,7 +28,7 @@ settings.epochs = epochs;
 settings.hidden_multiplier = hidden_multiplier;
 settings.regularization = regularization;
 settings.negative_reward = negative_reward;
-settings.expl_factor = expl_factor
+settings.expl_factor = expl_factor;
 
 % disp('Setting up parallel pool')
 % try 
@@ -38,7 +38,7 @@ settings.expl_factor = expl_factor
 % end
 %Run main_NN
 disp('Running main file')
-main_NN
+main_NN_MC
 
 % delete(gcp('nocreate'));
 
