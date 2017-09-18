@@ -7,9 +7,9 @@ close all
 
 %% Network settings
 layer_settings.sizes = [2,30,1];
-layer_settings.styles = {'leaky_ReLU','tanh'};
+layer_settings.styles = {'tanh','Sigmoid'};
 layer_settings.dropout_rates = [0 0 0];
-layer_settings.regularization = [1e-4 1e-7];
+layer_settings.regularization = [0 0];
 lr = .1;
 decay_m = 0.90; 
 decay_RMS = 0.99;

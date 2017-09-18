@@ -38,7 +38,7 @@ settings.expl_factor = expl_factor;
 % end
 %Run main_NN
 disp('Running main file')
-main_NN_MC
+main_NN
 
 % delete(gcp('nocreate'));
 

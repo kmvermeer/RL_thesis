@@ -12,7 +12,7 @@ function [output] = activation_NN(input,style,varargin)
             if nargin == 3 & varargin{1} == true
                 output = 1 * (input>0);      
             else
-                output = input .* (input>0)
+                output = input .* (input>0);
             end
         case 'leaky_ReLU'
             if nargin == 3 & varargin{1} == true
