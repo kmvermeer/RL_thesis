@@ -78,7 +78,7 @@ function [F,nF] = get_features(s,a)
 
 
     %Get relative angles per hinge
-    rel_angle = zeros(1,max_no_of_hinges);        %THIS SHOULD BE HINGES
+    rel_angle = zeros(1,max_no_of_bars);        %THIS SHOULD BE HINGES
     for k = 1:nH
         bars = get_connections(I,k,'hinge');
         nbars = length(bars);

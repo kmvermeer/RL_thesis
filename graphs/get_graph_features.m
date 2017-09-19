@@ -111,10 +111,12 @@ function graph_feature_vector = get_graph_features(I,H,max_no_of_hinges,max_no_o
     %cycles
     cycles = grCycleBasis(E);
     no_of_cycles = size(cycles,2);
-    [length_max,cycle_ID_longest] = max(sum(cycles,1));
+    [length_max,cycle_ID_longest] = max(sum(cycles,1));         %Length max is replaced by true length instead of no.of.elements
+    length_max = weights * cycles(:,cycle_ID_longest);
     part_of_longest = find(cycles(:,cycle_ID_longest));
     [length_min,cycle_ID_shortest] = min(sum(cycles,1));
-    part_of_shortest = find(cycles(:,cycle_ID_shortest));
+    length_min = weights * cycles(:,cycle_ID_shortest);
+    part_of_shortest = find(cycles(:,cycle_ID_shortest));       %length min is replaced by true length isntead of no.of.elements
     cluster_coef = ClusteringCoef(G);
 
     %% Creating features    
@@ -151,8 +153,8 @@ function graph_feature_vector = get_graph_features(I,H,max_no_of_hinges,max_no_o
     ft_part_of_longest(part_of_longest) = 1;
     ft_part_of_shortest = init_ft_bar;
     ft_part_of_shortest(part_of_shortest) = 1;
-    ft_longest_circle_length = length_max / 5;
-    ft_shortest_circle_length = length_min / 5;
+    ft_longest_circle_length = length_max / 20;
+    ft_shortest_circle_length = length_min / 20;
     ft_cluster_coef = init_ft_hinge;
     ft_cluster_coef(1:length(cluster_coef)) = cluster_coef;
     if shortest_path == true; ft_shortest_paths = SPs_vec ./ longest_path; else ft_shortest_paths = [];end
