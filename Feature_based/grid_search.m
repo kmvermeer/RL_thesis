@@ -117,10 +117,10 @@ end
 save_string = strcat('../results/',names{V},'_',value_string,'.mat');
 disp(save_string)           
 main_NN_MC
-save(save_string,'weights','error_list','Qlist_all','alist_all',...
-    'run_time','total_reward_list','settings','total_reward')
-% save(save_string,'weights','error_list','alist_all',...             
-%     'run_time','total_reward_list','settings','total_reward')   %MC Version
+% save(save_string,'weights','error_list','Qlist_all','alist_all',...
+%     'run_time','total_reward_list','settings','total_reward')
+save(save_string,'weights','error_list','alist_all',...             
+    'run_time','total_reward_list','settings','total_reward')   %MC Version
 fprintf('Finished run no %i over %s',[ix names{V}])
     
 
