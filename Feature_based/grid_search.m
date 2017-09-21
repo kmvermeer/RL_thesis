@@ -8,11 +8,12 @@ clear variables
 
 
 try
-    %for i in {1..4}; do for ii in {1..28}; do qsub -v alog_ix=$i,variable_ix=$ii jobv_runner.pbs; done; done
+    %for i in {1..4}; do for ii in {1..28}; do qsub -v algo_ix=$i,variable_ix=$ii job_runner.pbs; done; done
     %for i in {1..28}; do qsub -v variable_ix=$i job_runner.pbs; done
     variable_ix = str2num(getenv('variable_ix'));
     fprintf('Running variable ix %i\n',variable_ix);
     algo_ix = str2num(getenv('algo_ix'));
+    fprintf('Running variable ix %i\n',variable_ix);
 catch
     disp('Running localy, no cluster')
 end
