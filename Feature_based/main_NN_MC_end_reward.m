@@ -15,7 +15,7 @@ acounter = zeros(1,nA);
 
 %% Init NN
 [layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,...
-    hidden_multiplier,negative_reward,expl_factor] =cho get_NN_settings(settings);
+    hidden_multiplier,negative_reward,expl_factor] = get_NN_settings(settings);
 total_reward_list = zeros(1,epochs);
 
 nIn = nF;
