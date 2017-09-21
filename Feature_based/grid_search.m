@@ -142,5 +142,5 @@ fprintf('Finished run no %i over %s',[ix names{V}])
 
        
 % delete(gcp('nocreate'))
-% exit
+exit
 
