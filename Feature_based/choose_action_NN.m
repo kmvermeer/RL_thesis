@@ -1,4 +1,7 @@
-function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,layer_settings,expl_factor)
+function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,settings)
+    epochs = settings.epochs;
+    layer_settings = settings.layer_settings;
+    expl_factor = settings.expl_factor;
     settings_file
     valid = true;
     [I,H] = state2IH(s);

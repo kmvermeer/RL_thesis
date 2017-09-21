@@ -3,6 +3,8 @@ close all
 
 tstart = tic;
 settings_file;
+[layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,...
+    hidden_multiplier,negative_reward,expl_factor] = get_NN_settings(settings);
 counter = 1;
 [I,H] = initIH;
 s = get_state(I,H);
@@ -17,8 +19,6 @@ acounter = zeros(1,nA);
 
 
 %% Init NN
-[layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,...
-    hidden_multiplier,negative_reward,expl_factor] = get_NN_settings(settings);
     
 nIn = nF;
 nOut = 1;
@@ -41,7 +41,7 @@ while counter < epochs
     [I,H] = build_mech(H0,TDlist,linklist);
     s = get_state(I,H);
     [Q,a,random_bool] = choose_action_NN(s,weights,a_list,counter,...
-                        layer_settings,expl_factor);
+                        settings);
     term = 0;
     Qlist = zeros(1,10);
     step_number = 1;
@@ -66,8 +66,7 @@ while counter < epochs
 
         else
             [Q_new,a_new,random_bool] = choose_action_NN(s_new,weights,...
-                                        a_list,counter,layer_settings,...
-                                        expl_factor);
+                                        a_list,counter,settings);
             target = r+discount_rate*Q_new;
             s = s_new;
             a = a_new;

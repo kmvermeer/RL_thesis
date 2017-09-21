@@ -5,11 +5,14 @@ addpath ../NN/
 addpath ../graphs/
 clear variables
 
+
+
 try
+    %for i in {1..4}; do for ii in {1..28}; do qsub -v alog_ix=$i,variable_ix=$ii jobv_runner.pbs; done; done
     %for i in {1..28}; do qsub -v variable_ix=$i job_runner.pbs; done
     variable_ix = str2num(getenv('variable_ix'));
-    save('variable_name','variable_ix');
-    fprintf('Running variable ix %i',variable_ix);
+    fprintf('Running variable ix %i\n',variable_ix);
+    algo_ix = str2num(getenv('algo_ix'));
 catch
     disp('Running localy, no cluster')
 end
@@ -25,7 +28,7 @@ lr = 0.1;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 10000;
+epochs = 5;
 hidden_multiplier = .75;
 negative_reward = -5;
 
@@ -101,7 +104,7 @@ switch names{V}
         settings.negative_reward = values(ix);
         value_string = num2str(values(ix));
     case 'expl_factors'
-        settings.N0 = values(ix);
+        settings.expl_factor = values(ix);
         value_string = num2str(values(ix));
     case 'hidden_mltps'
         settings.hidden_multiplier = values(ix);
@@ -114,17 +117,30 @@ switch names{V}
         value_string = num2str(values(ix));
 end        
 
-save_string = strcat('../results/',names{V},'_',value_string,'.mat');
-disp(save_string)           
-main_NN_MC
-% save(save_string,'weights','error_list','Qlist_all','alist_all',...
-%     'run_time','total_reward_list','settings','total_reward')
-save(save_string,'weights','error_list','alist_all',...             
-    'run_time','total_reward_list','settings','total_reward')   %MC Version
+        
+
+switch algo_ix
+    case 1
+        main_NN
+        algo_string = 'TD';
+    case 2
+        main_NN_MC
+        algo_string = 'MC';
+    case 3
+        main_NN_end_reward
+        algo_string = 'TD_end';
+    case 4
+        main_NN_MC_end_reward
+        algo_string = 'MC_end';
+end
+save_string = strcat('../results/',algo_string,'_',names{V},'_',value_string,'.mat');
+disp(save_string)   
+
+save(save_string)  
 fprintf('Finished run no %i over %s',[ix names{V}])
     
 
        
 % delete(gcp('nocreate'))
-exit
+% exit
 

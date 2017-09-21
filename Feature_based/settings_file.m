@@ -5,7 +5,7 @@ lr_FEA = 1; %gradient decent starting point
 evals = 300;
 max_iter = 100;
 total_rotation = 2*pi;
-max_no_of_hinges = 8;
+max_no_of_hinges = 10;      %Default was 8
 max_no_of_bars = (max_no_of_hinges - 4)*2+4;
 nA = 2*max_no_of_bars;
 
@@ -23,4 +23,4 @@ H0 = [h1;h2;h3;h4];
 %% RL settings
 discount_rate = 1;
 learning_rate = 0.001;  %0.001 works well with the linear approximation approach
-epochs = 5000;      %Good results on 5k
+% epochs = 5000;      %Good results on 5k

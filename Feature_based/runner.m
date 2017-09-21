@@ -7,15 +7,15 @@ clear variables
 
 layer_settings.styles = {'Sigmoid','linear'};
 layer_settings.dropout_rates = [0 0  0];
-regularization = [1e-4 1e-3]; %L1 and L2 regularization
-% regularization = [0 0];
-lr = 1e-3;
+% regularization = [1e-4 1e-3]; %L1 and L2 regularization
+regularization = [0 0];
+lr = 1e-1;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 2500;
+epochs = 10e3;
 hidden_multiplier = .75;
-negative_reward = -5;
+negative_reward = -1;
 expl_factor = 100;
 
 %Pack settings into Cell structure
@@ -30,15 +30,10 @@ settings.regularization = regularization;
 settings.negative_reward = negative_reward;
 settings.expl_factor = expl_factor;
 
-% disp('Setting up parallel pool')
-% try 
-%     gcp;
-% catch 
-%     parallel_pool = parpool('local');
-% end
+
 %Run main_NN
 disp('Running main file')
-main_NN
+main_NN_end_reward
 
-% delete(gcp('nocreate'));
+
 

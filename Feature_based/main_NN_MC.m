@@ -45,7 +45,7 @@ while counter < epochs
     while term == 0
         try
             [~,a,random_bool] = choose_action_NN(s,weights,a_list,counter,...
-                                layer_settings,expl_factor);
+                                settings);
         catch
             keyboard
         end

@@ -75,7 +75,12 @@ function graph_feature_vector = get_graph_features(I,H,max_no_of_hinges,max_no_o
     %Shortest paths:
     if shortest_path == true
         SPs_vec = ft_SPs;
-        start_ixs = [1 8 14 19 23 26 28];
+        staircase_sum = @(x) 1/2*x*(x+1);
+        start_ixs = zeros(1,max_no_of_hinges-1);
+        for k = 1:(max_no_of_hinges-1)
+            start_ixs(k) = staircase_sum(max_no_of_hinges-1)-staircase_sum(max_no_of_hinges-k)+1; 
+        end
+%         start_ixs = [1 8 14 19 23 26 28];
         for node = 1:(nH-1)
             targets = [node+1:nH];
             [~,SPs] = shortestpathtree(G,node,targets);
