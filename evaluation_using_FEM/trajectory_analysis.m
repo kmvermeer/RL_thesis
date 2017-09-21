@@ -76,7 +76,6 @@ function [final_score,id_max,straightness_score_list,length_straight_sections,as
                 display(straight_section)
                 display(trajectory);
                 straightness_score = 0;
-                keyboard
             end
         else
             straightness_score = 0;

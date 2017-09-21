@@ -9,7 +9,7 @@ layer_settings.styles = {'Sigmoid','linear'};
 layer_settings.dropout_rates = [0 0  0];
 % regularization = [1e-4 1e-3]; %L1 and L2 regularization
 regularization = [0 0];
-lr = 1e-1;
+lr = 1e-3;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
@@ -33,7 +33,7 @@ settings.expl_factor = expl_factor;
 
 %Run main_NN
 disp('Running main file')
-main_NN_end_reward
+main_NN
 
 
 

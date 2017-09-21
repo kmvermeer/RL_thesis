@@ -5,7 +5,7 @@ lr_FEA = 1; %gradient decent starting point
 evals = 300;
 max_iter = 100;
 total_rotation = 2*pi;
-max_no_of_hinges = 8;      %Default was 8
+max_no_of_hinges = 10;      %Default was 8
 max_no_of_bars = (max_no_of_hinges - 4)*2+4;
 nA = 2*max_no_of_bars;
 
