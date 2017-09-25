@@ -4,7 +4,7 @@ addpath ../basic_RL_Hod/
 addpath ../NN/
 addpath ../graphs/
 clear variables
-
+reset(RandStream.getGlobalStream, sum(100*clock))
 
 
 try
