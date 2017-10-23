@@ -1,6 +1,8 @@
 close all
 tstart = tic;
 settings_file;
+[layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,...
+    hidden_multiplier,negative_reward,expl_factor] = get_NN_settings(settings);
 counter = 0;
 [I,H] = initIH;
 initial_reward = get_reward(I,H,negative_reward);
@@ -14,8 +16,7 @@ rlist = [0];
 Qlist = [0];
 deltalist = [0];
 alist_all = [];
-[layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,...
-    hidden_multiplier,negative_reward,expl_factor] = get_NN_settings(settings);
+
 
 %% Initialize basic 4bar starting point mechanism
 while counter < epochs

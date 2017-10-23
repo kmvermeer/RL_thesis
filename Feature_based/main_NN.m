@@ -4,19 +4,22 @@ close all
 tstart = tic;
 settings_file;
 [layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,...
-    hidden_multiplier,negative_reward,expl_factor] = get_NN_settings(settings);
+    hidden_multiplier,negative_reward,expl_factor,max_no_of_hinges,...
+          max_no_of_bars,nA] = get_NN_settings(settings_struct);
 counter = 1;
-[I,H] = initIH;
-s = get_state(I,H);
+[I,H] = initIH(max_no_of_hinges,max_no_of_bars);
+s = get_state(I,H,max_no_of_hinges,max_no_of_bars);
 initial_reward = get_reward(I,H);
-[~,nF] = get_features(s,1);
+[~,nF] = get_features(s,1,max_no_of_hinges,max_no_of_bars);
 Qlist_all = [];
 alist_all = [];
 total_reward_list = zeros(1,epochs);
 error_list = [];
 random_bool_list = [];
 acounter = zeros(1,nA);
-
+max_stepcount = max_no_of_hinges - 4;
+length_a_list = max_stepcount*2;
+length_q_list = length_a_list;
 
 %% Init NN
     
@@ -37,13 +40,13 @@ while counter < epochs
     
     TDlist = '';
     linklist = [];
-    a_list = zeros(1,10);
+    a_list = zeros(1,length_a_list);
     [I,H] = build_mech(H0,TDlist,linklist);
-    s = get_state(I,H);
+    s = get_state(I,H,max_no_of_hinges,max_no_of_bars);
     [Q,a,random_bool] = choose_action_NN(s,weights,a_list,counter,...
-                        settings);
+                        settings_struct,max_no_of_hinges,max_no_of_bars);
     term = 0;
-    Qlist = zeros(1,10);
+    Qlist = zeros(1,length_q_list);
     step_number = 1;
     total_reward = initial_reward;
 
@@ -53,12 +56,12 @@ while counter < epochs
         random_bool_list = [random_bool_list;random_bool];
         a_list(step_number) = a;
         acounter(a) = acounter(a)+1;
-        [Q,F] = get_Q_NN(s,a,weights,layer_settings);
+        [Q,F] = get_Q_NN(s,a,weights,layer_settings,max_no_of_hinges,max_no_of_bars);
         
-        [s_new,r,feasible_design] = stepper(s,a,negative_reward);
-        [I,H] = state2IH(s_new);
+        [s_new,r,feasible_design] = stepper(s,a,negative_reward,max_no_of_hinges,max_no_of_bars);
+        [I,H] = state2IH(s_new,max_no_of_hinges,max_no_of_bars);
         
-        if (size(I,1) > (max_no_of_bars-2) || step_number>7)
+        if (size(I,1) > (max_no_of_bars-2) || step_number >= (length_q_list-1)) 
             %perform update alternative
             target = r;
             delta = target-Q;            
@@ -66,7 +69,7 @@ while counter < epochs
 
         else
             [Q_new,a_new,random_bool] = choose_action_NN(s_new,weights,...
-                                        a_list,counter,settings);
+                                        a_list,counter,settings_struct);
             target = r+discount_rate*Q_new;
             s = s_new;
             a = a_new;

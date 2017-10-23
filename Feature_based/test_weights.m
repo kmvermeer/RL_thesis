@@ -15,7 +15,7 @@ G = 0;
 for i = 1:4
     [I,H] = state2IH(s);
 %     [Q,a] = choose_action(s,w,counter,a_list,'deterministic') %LINEAR
-    [Q,a] = choose_action_NN(s,weights,a_list,'deterministic',layer_settings,expl_factor);  %NN
+    [Q,a] = choose_action_NN(s,weights,a_list,'deterministic',settings);  %NN
     Qlist(i) = Q;
 
     [s_new,r] = stepper(s,a,negative_reward);

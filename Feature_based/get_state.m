@@ -1,6 +1,4 @@
-function s = get_state(I,H)
-    settings_file;
-    max_no_of_bars = (max_no_of_hinges - 4)*2+4;
+function s = get_state(I,H,max_no_of_hinges,max_no_of_bars)
     incident_vector = zeros(1,max_no_of_bars);
     nM = size(I,1);
     nH = size(I,2);

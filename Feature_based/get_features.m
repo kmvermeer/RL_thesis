@@ -1,6 +1,5 @@
-function [F,nF] = get_features(s,a)
-    settings_file
-    [I_orig,H_orig] = state2IH(s);
+function [F,nF] = get_features(s,a,max_no_of_hinges,max_no_of_bars)
+    [I_orig,H_orig] = state2IH(s,max_no_of_hinges,max_no_of_bars);
     bias_feature = 1;
 
     %% Things to notice about the current action:
@@ -78,9 +77,9 @@ function [F,nF] = get_features(s,a)
 
 
     %Get relative angles per hinge
-    rel_angle = zeros(1,max_no_of_bars);        %THIS SHOULD BE HINGES
+    rel_angle = zeros(1,max_no_of_hinges);        %THIS SHOULD BE HINGES
     for k = 1:nH
-        bars = get_connections(I,k,'hinge');
+        bars = get_connections(I,k,'bar');
         nbars = length(bars);
         vectors = [];
         for p = 1:nbars

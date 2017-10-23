@@ -1,13 +1,15 @@
-function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,settings)
-    epochs = settings.epochs;
-    layer_settings = settings.layer_settings;
-    expl_factor = settings.expl_factor;
-    settings_file
+function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,settings_struct,max_no_of_hinges,max_no_of_bars)
+    epochs = settings_struct.epochs;
+    layer_settings = settings_struct.layer_settings;
+    expl_factor = settings_struct.expl_factor;
+    max_no_of_hinges = settings_struct.hinge_limit;
+    max_no_of_bars = (max_no_of_hinges - 4)*2+4;
+    
     valid = true;
-    [I,H] = state2IH(s);
+    [I,H] = state2IH(s,max_no_of_hinges,max_no_of_bars);
     nM=size(I,1);
     nA = 2*max_no_of_bars;
-    N0 = epochs/expl_factor;
+    N0 = epochs/expl_factor;        %Small expl_factor --> high N0 --> Lots of randomness
     if counter == 'deterministic'
         epsilon = 0;
     else
@@ -22,7 +24,7 @@ function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,se
         a = randi(nA);
         link = ceil(a/2);
         if link <= nM
-            Q_new = get_Q_NN(s,a,weights,layer_settings);
+            Q_new = get_Q_NN(s,a,weights,layer_settings,max_no_of_hinges,max_no_of_bars);
             Q_max = Q_new;
             a_max = a;
         else
@@ -31,8 +33,7 @@ function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,se
             a_max = a;
         end
             
-        
-
+ 
     else
         random_bool = 0;
 %         display('deliberate')
@@ -49,7 +50,7 @@ function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,se
             else                
 %                 link = ceil(a/2);
 %                 if link <= nM
-                Q_new = get_Q_NN(s,a,weights,layer_settings);          
+                Q_new = get_Q_NN(s,a,weights,layer_settings,max_no_of_hinges,max_no_of_bars);          
 %                 else
 %                     Q_new = 0;
 %                 end

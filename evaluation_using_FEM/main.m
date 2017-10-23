@@ -54,7 +54,7 @@ toc
 %% Determine scores and display them
 if sum(isnan(values)) == 0 && size(xout,1)>5
     [final_score,id_max,straightness_score_list,length_straight_sections]=... 
-        trajectory_analysis(xout,values,I,x0,true);
+        trajectory_analysis(xout,values,I,H,x0,true);
     scores = straightness_score_list.*length_straight_sections;
     disp('Straightness_scores')
     disp(straightness_score_list)

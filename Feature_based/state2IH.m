@@ -1,5 +1,5 @@
-function [I,H] = state2IH(s)
-    settings_file
+function [I,H] = state2IH(s,max_no_of_hinges,max_no_of_bars)
+
     I_full = s(1:max_no_of_bars,1:max_no_of_hinges);
     H_full = s(1:2,max_no_of_hinges+1:end);
     [a,b] = find(I_full);
