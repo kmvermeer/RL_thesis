@@ -64,7 +64,6 @@ save_string = strcat('../results/','expl_',expl_str,'_action_',action_str,'.mat'
 disp(save_string)   
 
 save(save_string)  
-fprintf('Finished run no %i over %s',[ix names{V}])
        
 exit
 
