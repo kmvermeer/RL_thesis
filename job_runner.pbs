@@ -8,9 +8,9 @@ cd /home/kmvermeer/thesis/RL_thesis/
 
 module load matlab/2016b
 
-variable_ix=$variable_ix
-algo_ix = $algo_ix
-export variable_ix
-export algo_ix
+expl_ix=$expl_ix
+action_ix = $action_ix
+export expl_ix
+export action_ix
 
 matlab -nosplash -nodesktop -singleCompThread -r "cd Feature_based;grid_search_action_space"
