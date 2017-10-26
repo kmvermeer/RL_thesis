@@ -18,7 +18,7 @@ error_list = [];
 random_bool_list = [];
 acounter = zeros(1,nA);
 max_stepcount = max_no_of_hinges - 4;
-length_a_list = max_stepcount*2;
+length_a_list = max_stepcount;
 length_q_list = length_a_list;
 
 %% Init NN

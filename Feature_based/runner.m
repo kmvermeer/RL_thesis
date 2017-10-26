@@ -17,7 +17,7 @@ epochs = 10e3;
 hidden_multiplier = .75;
 negative_reward = -25;
 expl_factor = 100;
-hinge_limit = 11;
+hinge_limit = 15;
 
 
 %Pack settings into Cell structure
