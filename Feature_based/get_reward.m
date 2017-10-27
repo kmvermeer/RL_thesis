@@ -1,4 +1,4 @@
-function [r,feasible_design] = get_reward(I,H,negative_reward,varargin)
+function [r,feasible_design] = get_reward(I,H,negative_reward,max_no_of_bars,varargin)
     settings_file;
     Htrans = H';
     x0 = Htrans(:);
@@ -49,7 +49,7 @@ function [r,feasible_design] = get_reward(I,H,negative_reward,varargin)
 
     %% Determine scores and display them
     plot_trajectories = false;
-    if nargin == 4
+    if nargin == 5
         plot_trajectories = varargin{1};
     end
     if sum(isnan(values)) == 0 && size(xout,1)>5
@@ -75,5 +75,11 @@ function [r,feasible_design] = get_reward(I,H,negative_reward,varargin)
         r = final_score/100;          %Uncomment for straight lines!
 %         r = final_score;            %Uncomment for figure-eights
     end
+    
+    %% Penalize large structures:
+    penalties = linspace(.75 ,1 ,max_no_of_bars-3);
+    penalty_factor = fliplr(penalties);
+    penalized_score = final_score * penalty_factor(nM-3);
+    final_score = penalized_score;
     
 end

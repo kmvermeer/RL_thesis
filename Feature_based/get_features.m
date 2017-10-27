@@ -9,6 +9,9 @@ function [F,nF] = get_features(s,a,max_no_of_hinges,max_no_of_bars)
         isitT = 1;
         isitD = 0;
         operator = 'T';
+    elseif a == 0
+        isitT = 0;
+        isitD = 0;
     else
         isitT = 0;
         isitD = 1;
@@ -18,7 +21,7 @@ function [F,nF] = get_features(s,a,max_no_of_hinges,max_no_of_bars)
     %Boolean list of selected bar to act on:
     selected_bar = zeros(1,max_no_of_bars);
     link = ceil(a/2);
-    if link<max_no_of_bars
+    if link<max_no_of_bars && a>0
         selected_bar(link) = 1;
     end
     
@@ -33,6 +36,8 @@ function [F,nF] = get_features(s,a,max_no_of_hinges,max_no_of_bars)
     %number of connected links to current link
     if link>nM_current
         no_of_cons_to_link = 0;
+    elseif a == 0
+        no_of_cons_to_link = 0;
     else
         CH = get_connections(I_orig,link,'bar');
         BC = [get_connections(I_orig,CH(1),'hinge');get_connections(I_orig,CH(2),'hinge')];
@@ -43,7 +48,7 @@ function [F,nF] = get_features(s,a,max_no_of_hinges,max_no_of_bars)
     
     
     %% Resulting structure:
-    if bar_exist == 1
+    if bar_exist == 1 && a>0
         [I,H] = advance_mech(I_orig,H_orig,operator,link);
     else
         I = I_orig;

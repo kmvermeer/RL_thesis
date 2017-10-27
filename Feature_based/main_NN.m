@@ -9,7 +9,7 @@ settings_file;
 counter = 1;
 [I,H] = initIH(max_no_of_hinges,max_no_of_bars);
 s = get_state(I,H,max_no_of_hinges,max_no_of_bars);
-initial_reward = get_reward(I,H);
+initial_reward = get_reward(I,H,negative_reward,max_no_of_bars);
 [~,nF] = get_features(s,1,max_no_of_hinges,max_no_of_bars);
 Qlist_all = [];
 alist_all = [];
@@ -55,7 +55,9 @@ while counter < epochs
     while term == 0
         tic
         random_bool_list = [random_bool_list;random_bool];
-        acounter(a) = acounter(a)+1;
+        if a>0
+            acounter(a) = acounter(a)+1;
+        end
         [Q,F] = get_Q_NN(s,a,weights,layer_settings,max_no_of_hinges,max_no_of_bars);
         
         [s_new,r,feasible_design] = stepper(s,a,negative_reward,max_no_of_hinges,max_no_of_bars);
@@ -86,6 +88,9 @@ while counter < epochs
         Qlist(step_number) = Q;
         step_number = step_number+1;
         a_list(step_number) = a;
+        if a == 0
+            a_list(step_number) = -1;
+        end
 
     end
     total_reward_list(counter) = total_reward;

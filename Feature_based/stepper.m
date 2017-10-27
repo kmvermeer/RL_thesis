@@ -14,10 +14,15 @@ function [s_new,r,feasible_design] = stepper(s,a,negative_reward,max_no_of_hinge
         s_new = s;
         feasible_design = 1;
     else
-        [I,H,feasible_design] = advance_mech(I,H,operator,link);
-        s_new = get_state(I,H,max_no_of_hinges,max_no_of_bars);
+        if a > 0
+            [I,H,feasible_design] = advance_mech(I,H,operator,link);
+            s_new = get_state(I,H,max_no_of_hinges,max_no_of_bars);
+        else 
+            s_new = s;
+            feasible_design = 1;
+        end
         if feasible_design == 1 
-            [r,feasible_design] = get_reward(I,H,negative_reward);
+            [r,feasible_design] = get_reward(I,H,negative_reward,max_no_of_bars);
         else
             r = negative_reward;
         end

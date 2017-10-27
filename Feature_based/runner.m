@@ -13,11 +13,11 @@ lr = 1e-3;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 3e3;
+epochs = 3;
 hidden_multiplier = .75;
 negative_reward = -25;
-expl_factor = 100;
-hinge_limit = 8;
+expl_factor = 30;
+hinge_limit = 10;
 
 
 %Pack settings into Cell structure
@@ -37,6 +37,11 @@ settings_struct.hinge_limit = hinge_limit;
 %Run main_NN
 disp('Running main file')
 main_NN
+folder_name = strcat('results_',datestr(now,'yyyymmdd_ss'));
+mkdir(folder_name);
+cd folder_name
+save_string = strcat(folder_name,'.mat');
+save(save_string);
 
 
 
