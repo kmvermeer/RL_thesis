@@ -39,9 +39,12 @@ disp('Running main file')
 main_NN
 folder_name = strcat('results_',datestr(now,'yyyymmdd_ss'));
 mkdir(folder_name);
-cd folder_name
+cd(folder_name)
 save_string = strcat(folder_name,'.mat');
 save(save_string);
+
+
+%qsub -v job_runner.pbs;
 
 
 
