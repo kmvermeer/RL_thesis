@@ -1,0 +1,12 @@
+#PBS -l nodes=1:ppn=1
+#PBS -N RL_mech_design
+#PBS -M kazvermeer@gmail.com
+#PBS -m abe
+
+
+cd /home/kmvermeer/thesis/RL_thesis/
+
+module load matlab/2016b
+
+
+matlab -nosplash -nodesktop -singleCompThread -r "cd Feature_based;runner"
