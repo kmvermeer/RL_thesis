@@ -21,7 +21,7 @@ function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,se
     if ( randy<epsilon)
 %         display('random choice')
         random_bool = 1;
-        a = randi(nA);
+        a = randi(nA);              %Choose a random action
         link = ceil(a/2);
         if link <= nM
             Q_new = get_Q_NN(s,a,weights,layer_settings,max_no_of_hinges,max_no_of_bars);
@@ -43,7 +43,7 @@ function [Q_max,a_max,random_bool]= choose_action_NN(s,weights,a_list,counter,se
                                         %In that case, the value 9999 is assigned, 
                                         %which will never conflict with any of the future choices.
 
-        for a = 1:nA
+        for a =1:nA
             if ismember(a,a_list(end))
                 Q_new = 0;
                 display('prevented double')

@@ -53,11 +53,15 @@ function [r,feasible_design] = get_reward(I,H,negative_reward,varargin)
         plot_trajectories = varargin{1};
     end
     if sum(isnan(values)) == 0 && size(xout,1)>5
-        [final_score,id_max,straightness_score_list,length_straight_sections]=... 
+        
+        %straight line scoring:
+        [final_score]=... 
             trajectory_analysis(xout,values,I,H,x0,plot_trajectories);
         
+        %Figure-eight scoring:
+%     final_score = trajectory_analysis_inf(xout,values,I,H,x0,plot_trajectories);
         
-        scores = straightness_score_list.*length_straight_sections;
+        
     else
         final_score = 0;
 %         disp('Infeasible design')
@@ -68,7 +72,8 @@ function [r,feasible_design] = get_reward(I,H,negative_reward,varargin)
     if final_score<1
         r = negative_reward;
     else
-        r = final_score/100;
+        r = final_score/100;          %Uncomment for straight lines!
+%         r = final_score;            %Uncomment for figure-eights
     end
     
 end

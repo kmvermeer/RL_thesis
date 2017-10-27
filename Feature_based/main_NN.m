@@ -49,12 +49,12 @@ while counter < epochs
     Qlist = zeros(1,length_q_list);
     step_number = 1;
     total_reward = initial_reward;
+    a_list(step_number) = a;
 
     %% Perform SARSA
     while term == 0
         tic
         random_bool_list = [random_bool_list;random_bool];
-        a_list(step_number) = a;
         acounter(a) = acounter(a)+1;
         [Q,F] = get_Q_NN(s,a,weights,layer_settings,max_no_of_hinges,max_no_of_bars);
         
@@ -85,7 +85,8 @@ while counter < epochs
         error_list = [error_list;error];
         Qlist(step_number) = Q;
         step_number = step_number+1;
-        
+        a_list(step_number) = a;
+
     end
     total_reward_list(counter) = total_reward;
     counter = counter+1;  
