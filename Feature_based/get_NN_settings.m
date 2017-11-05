@@ -20,3 +20,5 @@ function [layer_settings,lr,decay_m,decay_RMS,...
     large_structure_penalty = settings_struct.large_structure_penalty;
 
 end
+
+

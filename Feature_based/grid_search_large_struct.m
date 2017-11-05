@@ -49,7 +49,6 @@ settings_struct.expl_factor = expl_factor;
 settings_struct.hinge_limit = hinge_limit;
 settings_struct.large_structure_penalty = large_structure_penalty;
 base_settings = settings_struct;
-
 penalties = [1 0.9 .8 .7 .6 .5 .4 .3 .2 .1 0];                                            %layer settings
 
 settings_struct.large_structure_penalty = penalties(penalty_ix);
@@ -59,7 +58,7 @@ main_NN;
 cd ..
 cd('results_penalties')
 penalty_str = num2str(penalties(penalty_ix));
-save_string = strcat('../results/','_penalty',penalty_str,'.mat');
+save_string = strcat('../results_penalty/',penalty_str,'.mat');
 disp(save_string)   
 save(save_string)  
        
