@@ -57,7 +57,7 @@ main_NN;
 %Saving
 cd ..
 penalty_str = num2str(penalties(penalty_ix));
-save_string = strcat('../results_penalty/',penalty_str,'.mat');
+save_string = strcat('../results_penalties/',penalty_str,'.mat');
 disp(save_string)   
 save(save_string)  
        
