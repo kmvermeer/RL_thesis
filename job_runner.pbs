@@ -11,4 +11,4 @@ module load matlab/2016b
 penalty_ix=$penalty_ix
 export penalty_ix
 
-matlab -nosplash -nodesktop -singleCompThread -r "cd Feature_based;grid_search_action_space"
+matlab -nosplash -nodesktop -singleCompThread -r "cd Feature_based;grid_search_large_struct"
