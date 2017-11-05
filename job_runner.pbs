@@ -8,9 +8,7 @@ cd /home/kmvermeer/thesis/RL_thesis/
 
 module load matlab/2016b
 
-expl_ix=$expl_ix
-action_ix = $action_ix
-export expl_ix
-export action_ix
+penalty_ix=$penalty_ix
+export penalty_ix
 
 matlab -nosplash -nodesktop -singleCompThread -r "cd Feature_based;grid_search_action_space"

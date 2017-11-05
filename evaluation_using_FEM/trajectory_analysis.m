@@ -60,7 +60,7 @@ function [final_score,id_max,straightness_score_list,length_straight_sections,as
 
                 %plotting trajectories (one by one and holding on)
                 if draw_plot == true
-                    plot(trajectory(:,1),trajectory(:,2),'--')
+                    plot(trajectory(:,1),trajectory(:,2),'--','LineWidth',2)
                     hold on
                     plot(straight_section(:,1),straight_section(:,2),'*')
                     plotx(x0,I)
@@ -101,7 +101,7 @@ function [final_score,id_max,straightness_score_list,length_straight_sections,as
     end
     
     %% Consolidate scores and determine highscore
-    
+%     display(max(straightness_score_list));
     length_score = length_straight_sections;
     length_score(length_score<1e-2) = 0;
     [final_score,id_max] = max(straightness_score_list.*length_score);

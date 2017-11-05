@@ -9,13 +9,16 @@ function [F,nF] = get_features(s,a,max_no_of_hinges,max_no_of_bars)
         isitT = 1;
         isitD = 0;
         operator = 'T';
+        isitNull = 0;
     elseif a == 0
         isitT = 0;
         isitD = 0;
+        isitNull = 1;
     else
         isitT = 0;
         isitD = 1;
         operator = 'D';
+        isitNull = 0;
     end
     
     %Boolean list of selected bar to act on:
@@ -135,7 +138,7 @@ function [F,nF] = get_features(s,a,max_no_of_hinges,max_no_of_bars)
     
     %% Assembling F(s) into vector
     sub_F = [nM_norm,nH_norm,hinge_active,bar_active,rel_L,...
-            rel_angle,con2base,isitT,isitD,selected_bar,...
+            rel_angle,con2base,isitT,isitD,isitNull,selected_bar,...
             bar_exist,no_of_cons_to_link,graph_features,xpos_nodes,ypos_nodes];
 
 %     sub_F = [nM_norm,isitT,isitD,selected_bar,bar_exist,no_of_cons_to_link];

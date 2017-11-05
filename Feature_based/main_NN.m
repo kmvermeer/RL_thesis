@@ -9,7 +9,7 @@ settings_file;
 counter = 1;
 [I,H] = initIH(max_no_of_hinges,max_no_of_bars);
 s = get_state(I,H,max_no_of_hinges,max_no_of_bars);
-initial_reward = get_reward(I,H,negative_reward,max_no_of_bars);
+initial_reward = get_reward(I,H,settings_struct);
 [~,nF] = get_features(s,1,max_no_of_hinges,max_no_of_bars);
 Qlist_all = [];
 alist_all = [];
@@ -60,7 +60,7 @@ while counter < epochs
         end
         [Q,F] = get_Q_NN(s,a,weights,layer_settings,max_no_of_hinges,max_no_of_bars);
         
-        [s_new,r,feasible_design] = stepper(s,a,negative_reward,max_no_of_hinges,max_no_of_bars);
+        [s_new,r,feasible_design] = stepper(s,a,settings_struct);
         [I,H] = state2IH(s_new,max_no_of_hinges,max_no_of_bars);
         
         if (size(I,1) > (max_no_of_bars-2) || step_number >= (length_q_list-1)) 

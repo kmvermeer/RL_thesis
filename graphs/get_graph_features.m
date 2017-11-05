@@ -162,7 +162,11 @@ function graph_feature_vector = get_graph_features(I,H,max_no_of_hinges,max_no_o
     ft_shortest_circle_length = length_min / 20;
     ft_cluster_coef = init_ft_hinge;
     ft_cluster_coef(1:length(cluster_coef)) = cluster_coef;
-    if shortest_path == true; ft_shortest_paths = SPs_vec ./ longest_path; else ft_shortest_paths = [];end
+    if shortest_path == true
+        ft_shortest_paths = SPs_vec ./ longest_path;
+    else
+        ft_shortest_paths = [];
+    end
     
     graph_feature_vector =[ft_betweenness, ft_degrees, ft_closeness,...
         ft_pagerank, ft_eigenvector, ft_graph_density,...

@@ -1,4 +1,7 @@
-function [r,feasible_design] = get_reward(I,H,negative_reward,max_no_of_bars,varargin)
+function [r,feasible_design] = get_reward(I,H,settings_struct,varargin)
+    
+    [~,~,~,~,~,~,~,negative_reward,~,~,max_no_of_bars,~,large_structure_penalty] = get_NN_settings(settings_struct);
+      
     settings_file;
     Htrans = H';
     x0 = Htrans(:);
@@ -54,8 +57,8 @@ function [r,feasible_design] = get_reward(I,H,negative_reward,max_no_of_bars,var
     end
     if sum(isnan(values)) == 0 && size(xout,1)>5
         
-        %straight line scoring:
-        [final_score]=... 
+%         %straight line scoring:
+        [final_score]=...
             trajectory_analysis(xout,values,I,H,x0,plot_trajectories);
         
         %Figure-eight scoring:
@@ -77,7 +80,7 @@ function [r,feasible_design] = get_reward(I,H,negative_reward,max_no_of_bars,var
     end
     
     %% Penalize large structures:
-    penalties = linspace(.75 ,1 ,max_no_of_bars-3);
+    penalties = linspace(large_structure_penalty ,1 ,max_no_of_bars-3);
     penalty_factor = fliplr(penalties);
     penalized_score = final_score * penalty_factor(nM-3);
     final_score = penalized_score;

@@ -1,5 +1,7 @@
-function [s_new,r,feasible_design] = stepper(s,a,negative_reward,max_no_of_hinges,max_no_of_bars)
-    
+function [s_new,r,feasible_design] = stepper(s,a,settings_struct)
+    [~,~,~,~,~,~,...
+    ~,negative_reward,~,max_no_of_hinges,...
+          max_no_of_bars] = get_NN_settings(settings_struct);
     [I,H] = state2IH(s,max_no_of_hinges,max_no_of_bars);
     link = ceil(a/2);
     if mod(a,2) == 0
@@ -22,7 +24,7 @@ function [s_new,r,feasible_design] = stepper(s,a,negative_reward,max_no_of_hinge
             feasible_design = 1;
         end
         if feasible_design == 1 
-            [r,feasible_design] = get_reward(I,H,negative_reward,max_no_of_bars);
+            [r,feasible_design] = get_reward(I,H,settings_struct);
         else
             r = negative_reward;
         end
