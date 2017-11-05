@@ -3,6 +3,7 @@ close all
 
 tstart = tic;
 settings_file;
+disp(settings_struct);
 [layer_settings,lr,decay_m,decay_RMS,NN_trainer_style,epochs,...
     hidden_multiplier,negative_reward,expl_factor,max_no_of_hinges,...
           max_no_of_bars,nA] = get_NN_settings(settings_struct);
