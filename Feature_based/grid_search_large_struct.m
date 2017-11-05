@@ -56,7 +56,6 @@ settings_struct.large_structure_penalty = penalties(penalty_ix);
 main_NN;
 %Saving
 cd ..
-cd('results_penalties')
 penalty_str = num2str(penalties(penalty_ix));
 save_string = strcat('../results_penalty/',penalty_str,'.mat');
 disp(save_string)   
