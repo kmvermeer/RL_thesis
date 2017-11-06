@@ -64,7 +64,7 @@ while counter < epochs
         [s_new,r,feasible_design] = stepper(s,a,settings_struct);
         [I,H] = state2IH(s_new,max_no_of_hinges,max_no_of_bars);
         
-        if (size(I,1) > (max_no_of_bars-2) || step_number >= (length_q_list-1)) 
+        if (size(I,1) > (max_no_of_bars-2) || step_number >= (length_q_list)) 
             %perform update alternative
             target = r;
             delta = target-Q;            
@@ -87,12 +87,13 @@ while counter < epochs
         total_reward = r + total_reward;
         error_list = [error_list;error];
         Qlist(step_number) = Q;
-        step_number = step_number+1;
-        a_list(step_number) = a;
-        if a == 0
-            a_list(step_number) = -1;
+        if step_number<length_q_list
+            step_number = step_number+1;
+            a_list(step_number) = a;
+            if a == 0
+                a_list(step_number) = -1;
+            end
         end
-
     end
     total_reward_list(counter) = total_reward;
     counter = counter+1;  

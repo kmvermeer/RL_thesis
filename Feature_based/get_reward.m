@@ -1,4 +1,4 @@
-function [r,feasible_design] = get_reward(I,H,settings_struct,varargin)
+function [r_penalized,feasible_design] = get_reward(I,H,settings_struct,varargin)
     
     [~,~,~,~,~,~,~,negative_reward,~,~,max_no_of_bars,~,large_structure_penalty] = get_NN_settings(settings_struct);
       
@@ -52,7 +52,7 @@ function [r,feasible_design] = get_reward(I,H,settings_struct,varargin)
 
     %% Determine scores and display them
     plot_trajectories = false;
-    if nargin == 5
+    if nargin == 4
         plot_trajectories = varargin{1};
     end
     if sum(isnan(values)) == 0 && size(xout,1)>5
@@ -82,7 +82,7 @@ function [r,feasible_design] = get_reward(I,H,settings_struct,varargin)
     %% Penalize large structures:
     penalties = linspace(large_structure_penalty ,1 ,max_no_of_bars-3);
     penalty_factor = fliplr(penalties);
-    penalized_score = final_score * penalty_factor(nM-3);
-    final_score = penalized_score;
-    
+    penalized_score = r * penalty_factor(nM-3);
+    r_penalized = penalized_score;
+
 end

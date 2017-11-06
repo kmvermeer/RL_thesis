@@ -13,12 +13,12 @@ lr = 1e-3;
 decay_m = 0.90; 
 decay_RMS = 0.99;
 NN_trainer_style = 'Adams';
-epochs = 5e3;
+epochs = 3e3;
 hidden_multiplier = .75;
 negative_reward = -25;
 expl_factor = 30;
 hinge_limit = 10;
-large_structure_penalty = 0.75;
+large_structure_penalty = 0.5;
 
 
 %Pack settings into Cell structure
@@ -38,12 +38,12 @@ settings_struct.large_structure_penalty = large_structure_penalty;
 %Run main_NN
 disp('Running main file')
 main_NN
-folder_name = strcat('results_',datestr(now,'yyyymmdd_ss'));
-cd ..
-mkdir(folder_name);
-cd(folder_name)
-save_string = strcat(folder_name,'.mat');
-save(save_string);
+% folder_name = strcat('results_',datestr(now,'yyyymmdd_ss'));
+% cd ..
+% mkdir(folder_name);
+% cd(folder_name)
+% save_string = strcat(folder_name,'.mat');
+% save(save_string);
 
 
 %qsub -v job_runner.pbs;

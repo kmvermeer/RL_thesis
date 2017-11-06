@@ -31,8 +31,8 @@ NN_trainer_style = 'Adams';
 epochs = 10e3;
 hidden_multiplier = .75;
 negative_reward = -25;
-expl_factor = 100;
-hinge_limit = 8;
+expl_factor = 30;
+hinge_limit = 10;
 large_structure_penalty = 0.75;
 
 %Pack settings into Cell structure
@@ -51,7 +51,7 @@ settings_struct.large_structure_penalty = large_structure_penalty;
 base_settings = settings_struct;
 penalties = [1 0.9 .8 .7 .6 .5 .4 .3 .2 .1 0];                                            %layer settings
 
-settings_struct.large_structure_penalty = penalties(penalty_ix);
+settings_struct.large_structure_penaltyt = penalties(penalty_ix);
 
 main_NN;
 %Saving

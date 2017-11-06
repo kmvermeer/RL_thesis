@@ -10,7 +10,7 @@ a_list = [];
 [I,H] = build_mech(H0,TDlist,linklist);
 s = get_state(I,H,max_no_of_hinges,max_no_of_bars);
 a_list = zeros(1,10);
-total_reward = get_reward(I,H);
+total_reward = get_reward(I,H,settings_struct);
 Qlist = zeros(1,10);
 G = 0;
 no_of_steps = max_no_of_hinges-4;
@@ -20,7 +20,7 @@ for i = 1:no_of_steps
     [Q,a] = choose_action_NN(s,weights,a_list,'deterministic',settings_struct);  %NN
     Qlist(i) = Q;
 
-    [s_new,r] = stepper(s,a,negative_reward,max_no_of_hinges,max_no_of_bars);
+    [s_new,r] = stepper(s,a,settings_struct);
     r
     total_reward = total_reward+r;
     G = discount_rate*G+r;
@@ -31,7 +31,7 @@ for i = 1:no_of_steps
     end
 end
 [I,H] = state2IH(s,max_no_of_hinges,max_no_of_bars);
-score = get_reward(I,H,negative_reward,true)
+score = get_reward(I,H,settings_struct,true)
 % animateIH(I,H);
 
 total_reward
