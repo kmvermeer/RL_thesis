@@ -51,7 +51,7 @@ settings_struct.large_structure_penalty = large_structure_penalty;
 base_settings = settings_struct;
 penalties = [1 0.9 .8 .7 .6 .5 .4 .3 .2 .1 0];                                            %layer settings
 
-settings_struct.large_structure_penaltyt = penalties(penalty_ix);
+settings_struct.large_structure_penalty = penalties(penalty_ix);
 
 main_NN;
 %Saving
